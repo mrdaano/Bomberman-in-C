@@ -8,6 +8,9 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
+#define maxBlocksInLength 4
+#define maxBlocksInWidth 5
+
 MI0283QT9 lcd;
 
 String gameName = "Bomberman";
@@ -61,6 +64,11 @@ void initMenu() {
 
 void initGame() {
   lcd.fillScreen(RGB(255,255,255));
+  for (int w = 0; w < maxBlocksInWidth; w++) {
+    for (int i = 0; i < maxBlocksInLength; i++) {
+      lcd.fillRect(w * 62, i * 60, 30, 30, RGB(0,0,0));
+    }
+  }
 }
 
 
