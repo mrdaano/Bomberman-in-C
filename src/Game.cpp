@@ -11,7 +11,14 @@
 #define maxBlocksInLength 4
 #define maxBlocksInWidth 5
 
+typedef struct {
+  int x;
+  int y;
+  uint16_t color;
+} PLAYER;
+
 MI0283QT9 lcd;
+PLAYER player1;
 
 String gameName = "Bomberman";
 bool inGame = false;
@@ -53,6 +60,14 @@ uint8_t readCalData(void)
   return 1;
 }
 
+void placePlayers() {
+  player1.x = 10;
+  player1.y = 10;
+  player1.color = RGB(30,130,76);
+
+  lcd.fillRect(player1.x, player1.y, 10, 10, player1.color);
+}
+
 void initMenu() {
   lcd.fillScreen(RGB(0,0,0));
   lcd.drawText(20, 20, gameName, RGB(255,255,255), RGB(0,0,0), 4);
@@ -66,9 +81,11 @@ void initGame() {
   lcd.fillScreen(RGB(255,255,255));
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
-      lcd.fillRect(w * 62, i * 60, 30, 30, RGB(0,0,0));
+      lcd.fillRect(w * 57 + 30, i * 57 + 20, 30, 30, RGB(0,0,0));
     }
   }
+
+  placePlayers();
 }
 
 
