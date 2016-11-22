@@ -6,8 +6,8 @@
 #include <digitalWriteFast.h>
 #include <stdbool.h>
 #include <Arduino.h>
+#include <util/delay.h>
 #include <EEPROM.h>
-#include "Nunchuck.c"
 
 #define maxBlocksInLength 4
 #define maxBlocksInWidth 5
@@ -18,6 +18,13 @@ typedef struct {
   int lives;
   uint16_t color;
 } PLAYER;
+
+typedef struct {
+  uint8_t x;
+  uint8_t y;
+} NUNCHUCK_DATA;
+
+NUNCHUCK_DATA nData;
 
 MI0283QT9 lcd;
 PLAYER player1;
@@ -62,6 +69,42 @@ uint8_t readCalData(void)
   return 1;
 }
 
+void nunchuck_init() {
+  Wire.begin();
+  Wire.beginTransmission(0x52);       // device address
+  Wire.write(0xF0);
+  Wire.write(0x55);
+  Wire.endTransmission();
+  _delay_ms(1);
+  Wire.beginTransmission(0x52);
+  Wire.write(0xFB);
+  Wire.write(0x00);
+  Wire.endTransmission();
+}
+
+
+void nunchuck_get_data() {
+  uint8_t cnt;
+  uint8_t status[6];
+  cnt = 0;
+  Wire.requestFrom (0x52, 6); // request data from nunchuck
+  while (Wire.available ()) {
+      // receive byte as an integer
+      status[cnt] =  Wire.read();
+      cnt++;
+  }
+
+  if (cnt > 5) {
+    nData.x = (status[0]);
+    nData.y = (status[1]);
+  }
+
+  // Send one byte of 00000000 to request next bytes
+  Wire.beginTransmission(0x52);      // transmit to device 0x52
+  Wire.write(0x00);           // sends one byte
+  Wire.endTransmission();    // stop transmitting
+}
+
 void placePlayers() {
   // Init player 1
   player1.x = 10;
@@ -95,6 +138,28 @@ void initGame() {
   placePlayers();
 }
 
+void movePlayer(PLAYER *p) {
+  lcd.fillRect(p->x - 5, p->y - 2, 10, 10, RGB(255,255,255));
+  lcd.fillRect(p->x, p->y, 10, 10, p->color);
+}
+
+void updatePlayers() {
+
+  if (nData.x > 130 && player1.x+5 != 320) {
+    player1.x = player1.x+5;
+  } else if(nData.x < 130 && player1.x-5 != 0) {
+    player1.x = player1.x-5;
+  }
+
+  if (nData.y > 126 && player1.y-2 > 0) {
+    player1.y = player1.y-2;
+  } else if (nData.y < 126 && player1.x-2 < 240) {
+    player1.y = player1.y+2;
+  }
+
+  movePlayer(&player1);
+}
+
 
 int main(void) {
   init();
@@ -122,6 +187,12 @@ int main(void) {
         initGame();
         inGame = true;
       }
+    }
+
+    if (inGame) {
+      nunchuck_get_data();
+      updatePlayers();
+      _delay_ms(50);
     }
 
   }
