@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <Arduino.h>
 #include <EEPROM.h>
+#include "Nunchuck.c"
 
 #define maxBlocksInLength 4
 #define maxBlocksInWidth 5
@@ -14,6 +15,7 @@
 typedef struct {
   int x;
   int y;
+  int lives;
   uint16_t color;
 } PLAYER;
 
@@ -64,6 +66,7 @@ void placePlayers() {
   // Init player 1
   player1.x = 10;
   player1.y = 10;
+  player1.lives = 3;
   player1.color = RGB(30,130,76);
 
   lcd.fillRect(player1.x, player1.y, 10, 10, player1.color);
@@ -96,6 +99,7 @@ void initGame() {
 int main(void) {
   init();
   lcd.begin(4);
+  nunchuck_init();
 
   // calibration for touchpanel
   readCalData();
