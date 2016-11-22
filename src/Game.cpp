@@ -144,20 +144,26 @@ void movePlayer(PLAYER *p) {
 }
 
 void updatePlayers() {
-
+  bool moved = false;
   if (nData.x > 130 && player1.x+5 != 320) {
     player1.x = player1.x+5;
+    moved = true;
   } else if(nData.x < 130 && player1.x-5 != 0) {
     player1.x = player1.x-5;
+    moved = true;
   }
 
   if (nData.y > 126 && player1.y-2 > 0) {
     player1.y = player1.y-2;
+    moved = true;
   } else if (nData.y < 126 && player1.x-2 < 240) {
     player1.y = player1.y+2;
+    moved = true;
   }
 
-  movePlayer(&player1);
+  if (moved) {
+    movePlayer(&player1);
+  }
 }
 
 
