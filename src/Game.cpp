@@ -137,6 +137,8 @@ void initGame() {
     }
   }
   // Create random crates
+  // The grid will be 8 by 6 and 40 pixels in width and length
+  // (320/8 = 40) & (240/8 = 40)
   double coordinates[4][5]= {30, 90, 150, 210, 270,
                              50, 50, 50, 50, 50,
                              110, 110, 110, 110, 110,
