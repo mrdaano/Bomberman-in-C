@@ -139,16 +139,21 @@ void initGame() {
 }
 
 void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
-  int u = p->x + 5;
+  int u = p->x;
   if (UpDown == 1) {
     u = p->x - 5;
+  } else if (UpDown == 0) {
+    u = p->x + 5;
   }
 
-  int l = p->y + 2;
+  int l = p->y;
 
   if (LeftRight == 1) {
     l = p->y - 2;
+  } else if (LeftRight == 0) {
+    l = p->y + 2;
   }
+  
   lcd.fillRect(u, l, 10, 10, RGB(255,255,255));
   lcd.fillRect(p->x, p->y, 10, 10, p->color);
 }
@@ -156,21 +161,21 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
 void updatePlayers() {
   bool moved = false;
   int UpDown = 6, LeftRight = 6;
-  if (nData.x > 130 && player1.x+5 != 320) {
+  if (nData.x > 135 && player1.x+5 != 320) {
     player1.x = player1.x+5;
     moved = true;
     UpDown = 1;
-  } else if(nData.x < 130 && player1.x-5 != 0) {
+  } else if(nData.x < 125 && player1.x-5 != 0) {
     player1.x = player1.x-5;
     moved = true;
     UpDown = 0;
   }
 
-  if (nData.y > 126 && player1.y-2 > 0) {
+  if (nData.y > 131 && player1.y-2 > 0) {
     player1.y = player1.y-2;
     moved = true;
     LeftRight = 0;
-  } else if (nData.y < 126 && player1.x-2 < 240) {
+  } else if (nData.y < 121 && player1.x-2 < 240) {
     player1.y = player1.y+2;
     moved = true;
     LeftRight = 1;
