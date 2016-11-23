@@ -146,8 +146,8 @@ void initGame() {
       randomSeed(analogRead(0));
       int r1 = random(4);
       int r2 = random(1, 4);
-      lcd.fillRect(coordinates[0][r1], coordinates[r2][r1], 30, 30, RGB(216,43,43));
-      // Just for the looks
+      lcd.fillRect(coordinates[0][r1], coordinates[r2][r1], 30, 30, RGB(139,69,19));
+      lcd.fillRect(coordinates[0][r1] + 2, coordinates[r2][r1] + 2, 26, 26, RGB(160,82,45));
       _delay_ms(100);
   }
 
