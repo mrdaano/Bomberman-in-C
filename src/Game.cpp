@@ -131,8 +131,15 @@ void initGame() {
   // Create all the walls
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
-      lcd.fillRect(w * 57 + 30, i * 57 + 20, 30, 30, RGB(0,0,0));
+      lcd.fillRect(w * 60 + 30, i * 60 + 20, 30, 30, RGB(0,0,0));
     }
+  }
+  // Create random crates
+  double coordinates[2][5]= {30, 90, 150, 210, 270,
+                             50, 50, 50, 50, 50};
+  for (int d = 0; d < 3; d++) {
+      int r = rand() % 5;
+      lcd.fillRect(coordinates[0][r], coordinates[1][r], 30, 30, RGB(216,43,43));
   }
 
   placePlayers();
