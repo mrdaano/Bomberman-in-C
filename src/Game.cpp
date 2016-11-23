@@ -1,5 +1,7 @@
 #include <avr/io.h>
 #include <Wire.h>
+#include <time.h>
+#include <stdlib.h>
 #include <SPI.h>
 #include <GraphicsLib.h>
 #include <MI0283QT9.h>
@@ -135,11 +137,18 @@ void initGame() {
     }
   }
   // Create random crates
-  double coordinates[2][5]= {30, 90, 150, 210, 270,
-                             50, 50, 50, 50, 50};
-  for (int d = 0; d < 3; d++) {
-      int r = rand() % 5;
-      lcd.fillRect(coordinates[0][r], coordinates[1][r], 30, 30, RGB(216,43,43));
+  double coordinates[4][5]= {30, 90, 150, 210, 270,
+                             50, 50, 50, 50, 50,
+                             110, 110, 110, 110, 110,
+                             170, 170, 170, 170, 170};
+  for (int d = 0; d < 10; d++) {
+      Serial.begin(9600);
+      randomSeed(analogRead(0));
+      int r1 = random(4);
+      int r2 = random(1, 4);
+      lcd.fillRect(coordinates[0][r1], coordinates[r2][r1], 30, 30, RGB(216,43,43));
+      // Just for the looks
+      _delay_ms(100);
   }
 
   placePlayers();
@@ -160,7 +169,7 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   } else if (LeftRight == 0) {
     l = p->y + 2;
   }
-  
+
   lcd.fillRect(u, l, 10, 10, RGB(255,255,255));
   lcd.fillRect(p->x, p->y, 10, 10, p->color);
 }
