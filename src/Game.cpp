@@ -11,8 +11,8 @@
 #include <util/delay.h>
 #include <EEPROM.h>
 
-#define maxBlocksInLength 4
-#define maxBlocksInWidth 5
+#define maxBlocksInLength 2
+#define maxBlocksInWidth 3
 
 typedef struct {
   int x;
@@ -114,7 +114,7 @@ void placePlayers() {
   player1.lives = 3;
   player1.color = RGB(30,144,255);
 
-  lcd.fillRect(player1.x, player1.y, 15, 15, player1.color);
+  lcd.fillRect(player1.x, player1.y, 20, 20, player1.color);
 }
 
 void initMenu() {
@@ -133,23 +133,21 @@ void initGame() {
   // Create all the walls
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
-      lcd.fillRect(w * 60 + 30, i * 60 + 20, 30, 30, RGB(0,0,0));
+      lcd.fillRect(w * 90 + 45, i * 96 + 48, 45, 48, RGB(0,0,0));
     }
   }
   // Create random crates
-  // The grid will be 8 by 6 and 40 pixels in width and length
-  // (320/8 = 40) & (240/8 = 40)
-  double coordinates[4][5]= {30, 90, 150, 210, 270,
-                             50, 50, 50, 50, 50,
-                             110, 110, 110, 110, 110,
-                             170, 170, 170, 170, 170};
+  double coordinates[4][6]= {45, 90, 135, 180, 225, 270,
+                             0, 0, 0, 0, 0, 0,
+                             96, 96, 96, 96, 96, 96,
+                             192, 192, 192, 192, 192, 192};
   for (int d = 0; d < 10; d++) {
       Serial.begin(9600);
       randomSeed(analogRead(0));
-      int r1 = random(4);
+      int r1 = random(5);
       int r2 = random(1, 4);
-      lcd.fillRect(coordinates[0][r1], coordinates[r2][r1], 30, 30, RGB(139,69,19));
-      lcd.fillRect(coordinates[0][r1] + 2, coordinates[r2][r1] + 2, 26, 26, RGB(160,82,45));
+      lcd.fillRect(coordinates[0][r1], coordinates[r2][r1], 45, 48, RGB(139,69,19));
+      lcd.fillRect(coordinates[0][r1] + 2, coordinates[r2][r1] + 2, 41, 44, RGB(160,82,45));
       _delay_ms(100);
   }
 
@@ -172,8 +170,8 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
     l = p->y + 2;
   }
 
-  lcd.fillRect(u, l, 15, 15, RGB(255,255,255));
-  lcd.fillRect(p->x, p->y, 15, 15, p->color);
+  lcd.fillRect(u, l, 20, 20, RGB(255,255,255));
+  lcd.fillRect(p->x, p->y, 20, 20, p->color);
 }
 
 void updatePlayers() {
