@@ -112,9 +112,9 @@ void placePlayers() {
   player1.x = 10;
   player1.y = 10;
   player1.lives = 3;
-  player1.color = RGB(30,130,76);
+  player1.color = RGB(30,144,255);
 
-  lcd.fillRect(player1.x, player1.y, 10, 10, player1.color);
+  lcd.fillRect(player1.x, player1.y, 15, 15, player1.color);
 }
 
 void initMenu() {
@@ -172,8 +172,8 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
     l = p->y + 2;
   }
 
-  lcd.fillRect(u, l, 10, 10, RGB(255,255,255));
-  lcd.fillRect(p->x, p->y, 10, 10, p->color);
+  lcd.fillRect(u, l, 15, 15, RGB(255,255,255));
+  lcd.fillRect(p->x, p->y, 15, 15, p->color);
 }
 
 void updatePlayers() {
