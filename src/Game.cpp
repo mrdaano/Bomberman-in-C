@@ -16,6 +16,7 @@
 
 #define maxBlocksInLength 2
 #define maxBlocksInWidth 3
+#define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 
 typedef struct {
   int x;
@@ -195,6 +196,34 @@ void initGame() {
   placePlayers();
 }
 
+// Not working
+bool checkHitWall(PLAYER *p) {
+  bool returnVal = false;
+  double walls[6][2] = {
+    2,2,
+    2,4,
+    2,6,
+    4,2,
+    4,4,
+    4,6
+  };
+
+  for (int i = 0; i < NELEMS(walls); i++) {
+    int x = (walls[i][0] * 90 + 45);
+    int y = (walls[i][1] * 96 + 48);
+
+    if (!(p->x > x && p->x < (x+45))) {
+      returnVal = true;
+    }
+
+    if (!(p->y > y && p->y < (y+48))) {
+      returnVal = true;
+    }
+  }
+
+  return returnVal;
+}
+
 void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   int u = p->x;
   if (UpDown == 1) {
@@ -220,7 +249,7 @@ void placeBomb(PLAYER *p) {
     p->bomb->placed = true;
     p->bomb->x = p->x;
     p->bomb->y = p->y;
-    p->bomb->explodeIn = 3;
+    p->bomb->explodeIn = 5;
   }
 }
 
