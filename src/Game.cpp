@@ -10,6 +10,9 @@
 #include <Arduino.h>
 #include <util/delay.h>
 #include <EEPROM.h>
+#include <avr/interrupt.h>
+#include <stdint.h>
+
 
 #define maxBlocksInLength 2
 #define maxBlocksInWidth 3
@@ -17,8 +20,16 @@
 typedef struct {
   int x;
   int y;
+  int explodeIn;
+  bool placed;
+} BOMB;
+
+typedef struct {
+  int x;
+  int y;
   int lives;
   uint16_t color;
+  BOMB *bomb;
 } PLAYER;
 
 typedef struct {
@@ -34,6 +45,13 @@ PLAYER player1;
 
 String gameName = "Bomberman";
 bool inGame = false;
+
+ISR(TIMER2_OVF_vect) {
+  if (player1.bomb->placed) {
+    //lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(217, 30, 24));
+  }
+}
+
 
 // void writeCalData(void)
 // {
@@ -116,6 +134,9 @@ void placePlayers() {
   player1.lives = 3;
   player1.color = RGB(30,144,255);
 
+  player1.bomb = (BOMB *) malloc(sizeof(BOMB));
+  player1.bomb->placed = false;
+
   lcd.fillRect(player1.x, player1.y, 20, 20, player1.color);
 }
 
@@ -190,7 +211,10 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
 }
 
 void placeBomb(PLAYER *p) {
-  lcd.fillRect(p->x, p->y, 10, 10, RGB(217, 30, 24));
+  p->bomb->placed = true;
+  p->bomb->x = p->x;
+  p->bomb->y = p->y;
+  p->bomb->explodeIn = 3;
 }
 
 void updatePlayers() {
@@ -227,6 +251,10 @@ void updatePlayers() {
 
 int main(void) {
   init();
+  TCCR2B |= (1 << CS02) | (1<<CS00);
+  TIMSK2 |= (1<<TOIE0);
+  TCNT2 = 0;
+  sei();
   lcd.begin(4);
   nunchuck_init();
 
