@@ -46,9 +46,14 @@ PLAYER player1;
 String gameName = "Bomberman";
 bool inGame = false;
 
+uint8_t teller = 0;
 ISR(TIMER2_OVF_vect) {
-  if (player1.bomb->placed) {
-    //lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(217, 30, 24));
+  teller++;
+  if ( teller >= 60 ) {
+    teller = 0;
+    if (player1.bomb->placed && player1.bomb->explodeIn != 0) {
+      player1.bomb->explodeIn--;
+    }
   }
 }
 
@@ -211,10 +216,21 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
 }
 
 void placeBomb(PLAYER *p) {
-  p->bomb->placed = true;
-  p->bomb->x = p->x;
-  p->bomb->y = p->y;
-  p->bomb->explodeIn = 3;
+  if (!p->bomb->placed) {
+    p->bomb->placed = true;
+    p->bomb->x = p->x;
+    p->bomb->y = p->y;
+    p->bomb->explodeIn = 3;
+  }
+}
+
+void updateBombs() {
+  if (player1.bomb->placed  && player1.bomb->explodeIn != 0) {
+    lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(217, 30, 24));
+  } else if (player1.bomb->placed  && player1.bomb->explodeIn == 0) {
+    player1.bomb->placed = false;
+    lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(255, 255, 255));
+  }
 }
 
 void updatePlayers() {
@@ -284,6 +300,7 @@ int main(void) {
     if (inGame) {
       nunchuck_get_data();
       updatePlayers();
+      updateBombs();
       _delay_ms(50);
     }
 
