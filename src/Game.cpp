@@ -1,6 +1,6 @@
 #include <avr/io.h>
 #include <Wire.h>
-#include <time.h>
+//include <time.h>
 #include <stdlib.h>
 #include <SPI.h>
 #include <GraphicsLib.h>
@@ -24,6 +24,7 @@ typedef struct {
 typedef struct {
   uint8_t x;
   uint8_t y;
+  bool buttonZ;
 } NUNCHUCK_DATA;
 
 NUNCHUCK_DATA nData;
@@ -99,6 +100,7 @@ void nunchuck_get_data() {
   if (cnt > 5) {
     nData.x = (status[0]);
     nData.y = (status[1]);
+    nData.buttonZ = !(status[5] & B00000001);
   }
 
   // Send one byte of 00000000 to request next bytes
@@ -126,6 +128,19 @@ void initMenu() {
   lcd.drawText(80, 100, startText, RGB(255,255,255), RGB(30,130,76), 2);
 
 }
+// double temp[16][2] = {};
+// double coordinates[16][2] = {
+//   // x, y
+//   1, 3,
+//   1, 4,
+//   1, 5};
+// void generateCrates() {
+//   Serial.begin(9600);
+//   randomSeed(analogRead(0));
+//   int r1 = random(5);
+//   int r2 = random(1, 4);
+//
+// }
 
 void initGame() {
   // Remove every content on screen
@@ -174,6 +189,10 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   lcd.fillRect(p->x, p->y, 20, 20, p->color);
 }
 
+void placeBomb(PLAYER *p) {
+  lcd.fillRect(p->x, p->y, 10, 10, RGB(217, 30, 24));
+}
+
 void updatePlayers() {
   bool moved = false;
   int UpDown = 6, LeftRight = 6;
@@ -199,6 +218,9 @@ void updatePlayers() {
 
   if (moved) {
     movePlayer(&player1, UpDown, LeftRight);
+  }
+  if (nData.buttonZ) {
+    placeBomb(&player1);
   }
 }
 
