@@ -209,14 +209,13 @@ bool checkHitWall(PLAYER *p) {
   };
 
   for (int i = 0; i < NELEMS(walls); i++) {
-    int x = (walls[i][0] * 90 + 45);
-    int y = (walls[i][1] * 96 + 48);
+    int x = (walls[0][i] * 90 + 45);
+    int y = (walls[1][i] * 96 + 48);
 
-    if (!(p->x > x && p->x < (x+45))) {
-      returnVal = true;
-    }
+    int xp = (p->x + 20);
+    int yp = (p->y + 20);
 
-    if (!(p->y > y && p->y < (y+48))) {
+    if ((xp > x && xp < (x+45)) || (yp > y && yp < (y+48))) {
       returnVal = true;
     }
   }
@@ -263,6 +262,10 @@ void updateBombs() {
 }
 
 void updatePlayers() {
+  if (checkHitWall(&player1)) {
+    return;
+  }
+
   bool moved = false;
   int UpDown = 6, LeftRight = 6;
   if (nData.x > 135 && player1.x+5 != 320) {
