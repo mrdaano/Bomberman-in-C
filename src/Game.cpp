@@ -172,6 +172,7 @@ void initMenu() {
 void initGame() {
   // Remove every content on screen
   lcd.fillScreen(RGB(255,255,255));
+  Serial.begin(9600);
   // Create all the walls
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
@@ -184,7 +185,6 @@ void initGame() {
                              96, 96, 96, 96, 96, 96,
                              192, 192, 192, 192, 192, 192};
   for (int d = 0; d < 10; d++) {
-      Serial.begin(9600);
       randomSeed(analogRead(0));
       int r1 = random(5);
       int r2 = random(1, 4);
@@ -208,14 +208,15 @@ bool checkHitWall(PLAYER *p) {
     4,6
   };
 
-  for (int i = 0; i < NELEMS(walls); i++) {
-    int x = (walls[0][i] * 90 + 45);
-    int y = (walls[1][i] * 96 + 48);
+  int xp = (p->x + 20);
+  int yp = (p->y + 20);
+  //Serial.println(xp);
+  for (int i = 0; i < 6; i++) {
+    int x = ((walls[1][i] * 90 + 45) / 3);
+    //Serial.println(x);
+    int y = ((walls[0][i] * 96 + 48) / 3);
 
-    int xp = (p->x + 20);
-    int yp = (p->y + 20);
-
-    if ((xp > x && xp < (x+45)) || (yp > y && yp < (y+48))) {
+    if ((xp > x && xp < (x+45)) && (yp > y && yp < (y+48))) {
       returnVal = true;
     }
   }
@@ -262,12 +263,16 @@ void updateBombs() {
 }
 
 void updatePlayers() {
+  int UpDown = 6, LeftRight = 6;
   if (checkHitWall(&player1)) {
+    // player1.x = (player1.x - 10);
+    // player1.y = (player1.y - 5);
+    // movePlayer(&player1, UpDown, LeftRight);
     return;
   }
 
   bool moved = false;
-  int UpDown = 6, LeftRight = 6;
+  Serial.println(player1.x);
   if (nData.x > 135 && player1.x+5 != 320) {
     player1.x = player1.x+5;
     moved = true;
