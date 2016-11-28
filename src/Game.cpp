@@ -169,6 +169,33 @@ void initMenu() {
 //
 // }
 
+int temp [4][6];
+void spawnCrates(int crate){
+  // Spawn crates on random locations
+  int coordinates[4][6]= {45, 90, 135, 180, 225, 270,
+                          0, 0, 0, 0, 0, 0,
+                          96, 96, 96, 96, 96, 96,
+                          192, 192, 192, 192, 192, 192};
+      Serial.begin(9600);
+      randomSeed(analogRead(0));
+      // Generate random numbers
+      int r1 = random(6);
+      int r2 = random(1, 4);
+      // Check if random numbers are unique
+        for (int i = 0; i < 4; i++) {
+          if (temp[i][0] == r1 && temp[0][i] == r2) {
+            spawnCrates(crate);
+          } else {
+            temp[crate][0] = r1;
+            temp[crate][1] = r2;
+          }
+        }
+        // Draw crates
+        lcd.fillRect(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]], 45, 48, RGB(139,69,19));
+        lcd.fillRect(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2, 41, 44, RGB(160,82,45));
+      _delay_ms(100);
+  }
+
 void initGame() {
   // Remove every content on screen
   lcd.fillScreen(RGB(255,255,255));
@@ -178,21 +205,10 @@ void initGame() {
       lcd.fillRect(w * 90 + 45, i * 96 + 48, 45, 48, RGB(0,0,0));
     }
   }
-  // Create random crates
-  double coordinates[4][6]= {45, 90, 135, 180, 225, 270,
-                             0, 0, 0, 0, 0, 0,
-                             96, 96, 96, 96, 96, 96,
-                             192, 192, 192, 192, 192, 192};
-  for (int d = 0; d < 10; d++) {
-      Serial.begin(9600);
-      randomSeed(analogRead(0));
-      int r1 = random(5);
-      int r2 = random(1, 4);
-      lcd.fillRect(coordinates[0][r1], coordinates[r2][r1], 45, 48, RGB(139,69,19));
-      lcd.fillRect(coordinates[0][r1] + 2, coordinates[r2][r1] + 2, 41, 44, RGB(160,82,45));
-      _delay_ms(100);
+  // Spawn all the crates
+  for (int i = 0; i < 4; i++) {
+    spawnCrates(i);
   }
-
   placePlayers();
 }
 
@@ -209,14 +225,16 @@ bool checkHitWall(PLAYER *p) {
   };
 
   for (int i = 0; i < NELEMS(walls); i++) {
-    int x = (walls[0][i] * 90 + 45);
-    int y = (walls[1][i] * 96 + 48);
+    // int x = (walls[0][i] * 90 + 45);
+    int x = (walls[0][0] * 90 + 45);
+    int y = (walls[1][1] * 96 + 48);
 
     int xp = (p->x + 20);
     int yp = (p->y + 20);
 
     if ((xp > x && xp < (x+45)) || (yp > y && yp < (y+48))) {
       returnVal = true;
+
     }
   }
 
