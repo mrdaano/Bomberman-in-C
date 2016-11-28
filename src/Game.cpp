@@ -168,6 +168,33 @@ void initMenu() {
 //   int r2 = random(1, 4);
 //
 // }
+int temp [6][2];
+int coordinates[4][6]= {45, 90, 135, 180, 225, 270,
+                        0, 0, 0, 0, 0, 0,
+                        96, 96, 96, 96, 96, 96,
+                        192, 192, 192, 192, 192, 192};
+void spawnCrates(int crate){
+  // Spawn crates on random locations
+  Serial.begin(9600);
+  randomSeed(analogRead(0));
+  // Generate random numbers
+  int r1 = random(6);
+  int r2 = random(1, 4);
+  // Check if random numbers are unique
+    for (int i = 0; i < 6; i++) {
+      if (temp[i][0] == r1 || temp[i][1] == r2) {
+        // The recursion has still some problems
+        //spawnCrates(crate);
+      } else {
+        temp[crate][0] = r1;
+        temp[crate][1] = r2;
+      }
+    }
+    // Draw crates
+    lcd.fillRect(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]], 45, 48, RGB(139,69,19));
+    lcd.fillRect(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2, 41, 44, RGB(160,82,45));
+    _delay_ms(100);
+  }
 
 void initGame() {
   // Remove every content on screen
@@ -179,20 +206,10 @@ void initGame() {
       lcd.fillRect(w * 90 + 45, i * 96 + 48, 45, 48, RGB(0,0,0));
     }
   }
-  // Create random crates
-  double coordinates[4][6]= {45, 90, 135, 180, 225, 270,
-                             0, 0, 0, 0, 0, 0,
-                             96, 96, 96, 96, 96, 96,
-                             192, 192, 192, 192, 192, 192};
-  for (int d = 0; d < 10; d++) {
-      randomSeed(analogRead(0));
-      int r1 = random(5);
-      int r2 = random(1, 4);
-      lcd.fillRect(coordinates[0][r1], coordinates[r2][r1], 45, 48, RGB(139,69,19));
-      lcd.fillRect(coordinates[0][r1] + 2, coordinates[r2][r1] + 2, 41, 44, RGB(160,82,45));
-      _delay_ms(100);
+  // Spawn all the crates
+  for (int i = 0; i < 6; i++) {
+    spawnCrates(i);
   }
-
   placePlayers();
 }
 
