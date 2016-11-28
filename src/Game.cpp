@@ -169,6 +169,17 @@ void initMenu() {
 //
 // }
 
+// for(int r = 0; r < 4; r++){
+//   for(int c = 0; c < 6; c++){
+//     if(temp[r][c] == temp[0][r1] && temp[r][c] == temp[r2][r1]){
+//       spawnCrates();
+//     }else {
+//       temp[0][r1] = coordinates[0][r1];
+//       temp[r2][r1] = coordinates[r2][r1];
+//     }
+//   }
+// }
+
 int temp [4][6];
 void spawnCrates(int crate){
   // Spawn crates on random locations
