@@ -172,6 +172,7 @@ void initMenu() {
 void initGame() {
   // Remove every content on screen
   lcd.fillScreen(RGB(255,255,255));
+  Serial.begin(9600);
   // Create all the walls
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
@@ -184,7 +185,6 @@ void initGame() {
                              96, 96, 96, 96, 96, 96,
                              192, 192, 192, 192, 192, 192};
   for (int d = 0; d < 10; d++) {
-      Serial.begin(9600);
       randomSeed(analogRead(0));
       int r1 = random(5);
       int r2 = random(1, 4);
@@ -196,27 +196,61 @@ void initGame() {
   placePlayers();
 }
 
-// Not working
+int getPlayerXGrid(PLAYER *p) {
+  int x = p->x;
+  if (x > 0 && x < 45) {
+    return 1;
+  } else if (x > 45 && x < 90) {
+    return 2;
+  } else if (x > 90 && x < 135) {
+    return 3;
+  } else if (x > 135 && x < 180) {
+    return 4;
+  } else if (x > 180 && x < 225) {
+    return 5;
+  } else if (x > 225 && x < 270) {
+    return 6;
+  }
+
+  return 7;
+}
+
+int getPlayerYGrid(PLAYER *p) {
+  int y = p->y;
+  if (y > 0 && y < 48) {
+    return 1;
+  } else if (y > 48 && y < 96) {
+    return 2;
+  } else if (y > 96 && y < 144) {
+    return 3;
+  } else if (y > 144 && y < 192) {
+    return 4;
+  }
+
+  return 5;
+}
+
 bool checkHitWall(PLAYER *p) {
   bool returnVal = false;
-  double walls[6][2] = {
-    2,2,
-    2,4,
-    2,6,
-    4,2,
-    4,4,
-    4,6
+  int walls[6][2] = {
+    {2,2},
+    {2,4},
+    {2,6},
+    {4,2},
+    {4,4},
+    {4,6}
   };
 
-  for (int i = 0; i < NELEMS(walls); i++) {
-    int x = (walls[0][i] * 90 + 45);
-    int y = (walls[1][i] * 96 + 48);
+  int xGrid = getPlayerXGrid(p);
+  int yGrid = getPlayerYGrid(p);
+  for (int i = 0; i < 6; i++) {
+    int x = walls[i][1];
+    Serial.println(x);
+    int y = walls[0][i];
 
-    int xp = (p->x + 20);
-    int yp = (p->y + 20);
-
-    if ((xp > x && xp < (x+45)) || (yp > y && yp < (y+48))) {
-      returnVal = true;
+    if (x == xGrid && y == yGrid) {
+      // Serial.println("In muur");
+      return true;
     }
   }
 
@@ -262,12 +296,15 @@ void updateBombs() {
 }
 
 void updatePlayers() {
+  int UpDown = 6, LeftRight = 6;
   if (checkHitWall(&player1)) {
-    return;
+    // player1.x = (player1.x - 10);
+    // player1.y = (player1.y - 5);
+    // movePlayer(&player1, UpDown, LeftRight);
+    // return;
   }
 
   bool moved = false;
-  int UpDown = 6, LeftRight = 6;
   if (nData.x > 135 && player1.x+5 != 320) {
     player1.x = player1.x+5;
     moved = true;
