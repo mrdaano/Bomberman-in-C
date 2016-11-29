@@ -199,7 +199,6 @@ void spawnCrates(int crate){
 void initGame() {
   // Remove every content on screen
   lcd.fillScreen(RGB(255,255,255));
-  Serial.begin(9600);
   // Create all the walls
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
@@ -247,32 +246,6 @@ int getPlayerYGrid(PLAYER *p) {
   return 5;
 }
 
-bool checkHitWall(PLAYER *p) {
-  bool returnVal = false;
-  int walls[6][2] = {
-    {2,2},
-    {2,4},
-    {2,6},
-    {4,2},
-    {4,4},
-    {4,6}
-  };
-
-  int xGrid = getPlayerXGrid(p);
-  int yGrid = getPlayerYGrid(p);
-  for (int i = 0; i < 6; i++) {
-    int x = walls[i][1];
-    Serial.println(x);
-    int y = walls[0][i];
-
-    if (x == xGrid && y == yGrid) {
-      // Serial.println("In muur");
-      return true;
-    }
-  }
-
-  return returnVal;
-}
 
 void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   int u = p->x;
@@ -292,6 +265,35 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
 
   lcd.fillRect(u, l, 20, 20, RGB(255,255,255));
   lcd.fillRect(p->x, p->y, 20, 20, p->color);
+}
+
+bool checkHitWall(PLAYER *p) {
+  bool returnVal = false;
+  int walls[6][2] = {
+    {2,2},
+    {2,4},
+    {2,6},
+    {4,2},
+    {4,4},
+    {4,6}
+  };
+
+  int xGrid = getPlayerXGrid(p);
+  int yGrid = getPlayerYGrid(p);
+  for (int i = 0; i < 6; i++) {
+    int x = walls[i][1];
+    int y = walls[i][0];
+
+    if (x == xGrid && y == yGrid) {
+      p->x = (p->x - 10);
+      p->y = (p->y - 5);
+      movePlayer(p, 6, 6);
+      Serial.println("In muur");
+      return true;
+    }
+  }
+
+  return returnVal;
 }
 
 void placeBomb(PLAYER *p) {
@@ -315,10 +317,7 @@ void updateBombs() {
 void updatePlayers() {
   int UpDown = 6, LeftRight = 6;
   if (checkHitWall(&player1)) {
-    // player1.x = (player1.x - 10);
-    // player1.y = (player1.y - 5);
-    // movePlayer(&player1, UpDown, LeftRight);
-    // return;
+    return;
   }
 
   bool moved = false;
