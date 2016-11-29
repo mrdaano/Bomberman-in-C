@@ -168,31 +168,38 @@ void initMenu() {
 //   int r2 = random(1, 4);
 //
 // }
+// int coordinates[4][6]= {45, 90, 135, 180, 225, 270,
+//                         0, 0, 0, 0, 0, 0,
+//                         96, 96, 96, 96, 96, 96,
+//                         192, 192, 192, 192, 192, 192};
+//(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]]
+//(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2
+
 int temp [6][2];
-int coordinates[4][6]= {45, 90, 135, 180, 225, 270,
-                        0, 0, 0, 0, 0, 0,
-                        96, 96, 96, 96, 96, 96,
-                        192, 192, 192, 192, 192, 192};
+int possiblePositions[26][2] = {
+  {3,1}, {4,1}, {5,1}, {6,1}, {7,1},
+  {2,3}, {2,5}, {2,7},
+  {3,1}, {3,2}, {3,3}, {3,4}, {3,5}, {3,6}, {3,7},
+  {4,1}, {4,3}, {4,5}, {4,7},
+  {5,1}, {5,2}, {5,3}, {5,4}, {5,5}, {5,6}, {5,7}
+};
+
 void spawnCrates(int crate){
   // Spawn crates on random locations
-  Serial.begin(9600);
   randomSeed(analogRead(0));
   // Generate random numbers
-  int r1 = random(6);
-  int r2 = random(1, 4);
+  int r1 = random(26);
   // Check if random numbers are unique
     for (int i = 0; i < 6; i++) {
-      if (temp[i][0] == r1 || temp[i][1] == r2) {
-        // The recursion has still some problems
-        //spawnCrates(crate);
-      } else {
-        temp[crate][0] = r1;
-        temp[crate][1] = r2;
+      if (temp[i][0] == possiblePositions[r1][0] && temp[i][1] == possiblePositions[r1][1]) {
+        spawnCrates(crate);
       }
     }
+      temp[crate][0] = possiblePositions[r1][0];
+      temp[crate][1] = possiblePositions[r1][1];
     // Draw crates
-    lcd.fillRect(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]], 45, 48, RGB(139,69,19));
-    lcd.fillRect(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2, 41, 44, RGB(160,82,45));
+    lcd.fillRect(temp[crate][1] * 45 - 45, temp[crate][0] * 48 - 48, 45, 48, RGB(139,69,19));
+    lcd.fillRect(temp[crate][1] * 45 - 43, temp[crate][0] * 48 + - 46, 41, 44, RGB(160,82,45));
     _delay_ms(100);
   }
 
@@ -358,6 +365,7 @@ int main(void) {
   sei();
   lcd.begin(4);
   nunchuck_init();
+  Serial.begin(9600);
 
   // calibration for touchpanel
   readCalData();
