@@ -175,7 +175,7 @@ void initMenu() {
 //(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]]
 //(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2
 
-int temp [6][2];
+int temp [26][2];
 int possiblePositions[26][2] = {
   {3,1}, {4,1}, {5,1}, {6,1}, {7,1},
   {2,3}, {2,5}, {2,7},
@@ -190,7 +190,7 @@ void spawnCrates(int crate){
   // Generate random numbers
   int r1 = random(26);
   // Check if random numbers are unique
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 26; i++) {
       if (temp[i][0] == possiblePositions[r1][0] && temp[i][1] == possiblePositions[r1][1]) {
         spawnCrates(crate);
       }
@@ -200,7 +200,6 @@ void spawnCrates(int crate){
     // Draw crates
     lcd.fillRect(temp[crate][1] * 45 - 45, temp[crate][0] * 48 - 48, 45, 48, RGB(139,69,19));
     lcd.fillRect(temp[crate][1] * 45 - 43, temp[crate][0] * 48 + - 46, 41, 44, RGB(160,82,45));
-    _delay_ms(100);
   }
 
 void initGame() {
@@ -213,7 +212,7 @@ void initGame() {
     }
   }
   // Spawn all the crates
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 10; i++) {
     spawnCrates(i);
   }
   placePlayers();
