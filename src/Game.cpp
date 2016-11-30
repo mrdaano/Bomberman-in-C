@@ -135,10 +135,10 @@ void nunchuck_get_data() {
 
 void placePlayers() {
   // Init player 1
-  player1.x = 10;
-  player1.y = 10;
+  player1.x = 5;
+  player1.y = 5;
   player1.lives = 3;
-  player1.color = RGB(30,144,255);
+  player1.color = RGB(36, 41, 117);
 
   player1.bomb = (BOMB *) malloc(sizeof(BOMB));
   player1.bomb->placed = false;
@@ -152,7 +152,7 @@ void initMenu() {
   lcd.drawText(20, 20, gameName, RGB(255,255,255), RGB(0,0,0), 4);
 
   String startText = "Start game";
-  lcd.drawText(80, 100, startText, RGB(255,255,255), RGB(30,130,76), 2);
+  lcd.drawText(40, 120, startText, RGB(255,255,255), RGB(30,130,76), 3);
 
 }
 // double temp[16][2] = {};
@@ -175,45 +175,58 @@ void initMenu() {
 //(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]]
 //(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2
 
-int temp [31][2];
-int possiblePositions[31][2] = {
-  {1,3}, {1,4}, {1,5}, {1,6}, {1,7},
-  {3,1}, {4,1}, {5,1}, {6,1}, {7,1},
-  {2,3}, {2,5}, {2,7},
-  {3,1}, {3,2}, {3,3}, {3,4}, {3,5}, {3,6}, {3,7},
-  {4,1}, {4,3}, {4,5}, {4,7},
-  {5,1}, {5,2}, {5,3}, {5,4}, {5,5}, {5,6}, {5,7}
+int temp [30][2];
+int possiblePositions[67][2] = {
+  {1,3}, {1,4}, {1,5}, {1,6}, {1,7}, {1,8}, {1,9}, {1,10},
+  {2,3}, {2,5}, {2,7}, {2,9},
+  {3,1}, {3,2}, {3,3}, {3,4}, {3,5}, {3,6}, {3,7}, {3,8}, {3,9}, {3,10},
+  {4,1}, {4,3}, {4,5}, {4,7}, {4,9},
+  {5,1}, {5,2}, {5,3}, {5,4}, {5,5}, {5,6}, {5,7}, {5,8}, {5,9}, {5,10},
+  {6,1}, {6,3}, {6,5}, {6,7}, {6,9},
+  {7,1}, {7,2}, {7,3}, {7,4}, {7,5}, {7,6}, {7,7}, {7,8}, {7,9}, {7,10},
+  {8,1}, {8,3}, {8,5}, {8,7}, {8,9},
+  {9,1}, {9,2}, {9,3}, {9,4}, {9,5}, {9,6}, {9,7}, {9,8}, {9,9}, {9,10}
 };
 
 void spawnCrates(int crate){
   // Spawn crates on random locations
   randomSeed(analogRead(0));
   // Generate random numbers
-  int r1 = random(31);
+  int r1 = random(67);
   // Check if random numbers are unique
-    for (int i = 0; i < 31; i++) {
+    for (int i = 0; i < 67; i++) {
       if (temp[i][0] == possiblePositions[r1][0] && temp[i][1] == possiblePositions[r1][1]) {
         spawnCrates(crate);
       }
     }
+      Serial.println(temp[crate][1]);
+      Serial.println("\n");
+      Serial.println(temp[crate][0]);
       temp[crate][0] = possiblePositions[r1][0];
       temp[crate][1] = possiblePositions[r1][1];
     // Draw crates
     lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
-    lcd.fillRect(temp[crate][1] * 25 - 23, temp[crate][0] * 27 - 25, 23, 25, RGB(160,82,45));
+    lcd.fillRect(temp[crate][1] * 25 - 23, temp[crate][0] * 27 - 25, 21, 23, RGB(160,82,45));
   }
 
 void initGame() {
   // Remove every content on screen
-  lcd.fillScreen(RGB(255,255,255));
+  lcd.fillScreen(RGB(11, 102, 41));
   // Create all the walls
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
-      lcd.fillRect(w * 50 + 25, i * 54 + 27, 25, 27, RGB(0,0,0));
+      lcd.fillRect(w * 50 + 25, i * 54 + 27, 25, 27, RGB(105, 105, 105));
+      lcd.fillRect(w * 50 + 27, i * 54 + 29, 21, 23, RGB(128, 128, 128));
     }
   }
+  // Draw info section
+  lcd.fillRect(250, 0, 70, 240, RGB(47,79,79));
+  lcd.fillRect(253, 3, 64, 234, RGB(0,0,0));
+  // Draw text
+  String startText = "Score";
+  lcd.drawText(256, 6, startText, RGB(47,79,79), RGB(0,0,0), 1);
   // Spawn all the crates
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 30; i++) {
     spawnCrates(i);
   }
   placePlayers();
@@ -265,12 +278,12 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   int l = p->y;
 
   if (LeftRight == 1) {
-    l = p->y - 2;
+    l = p->y - 5;
   } else if (LeftRight == 0) {
-    l = p->y + 2;
+    l = p->y + 5;
   }
 
-  lcd.fillRect(u, l, 20, 20, RGB(255,255,255));
+  lcd.fillRect(u, l, 20, 20, RGB(15, 101, 15));
   lcd.fillRect(p->x, p->y, 20, 20, p->color);
 }
 
@@ -337,11 +350,11 @@ void updatePlayers() {
     moved = true;
     UpDown = 0;
   } else if (nData.y > 131 && player1.y-2 > 0) {
-    player1.y = player1.y-2;
+    player1.y = player1.y-5;
     moved = true;
     LeftRight = 0;
   } else if (nData.y < 121 && player1.x-2 < 240) {
-    player1.y = player1.y+2;
+    player1.y = player1.y+5;
     moved = true;
     LeftRight = 1;
   }
