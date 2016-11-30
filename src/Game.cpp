@@ -14,8 +14,8 @@
 #include <stdint.h>
 
 
-#define maxBlocksInLength 2
-#define maxBlocksInWidth 3
+#define maxBlocksInLength 4
+#define maxBlocksInWidth 5
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 
 typedef struct {
@@ -46,6 +46,7 @@ PLAYER player1;
 
 String gameName = "Bomberman";
 bool inGame = false;
+bool rendering = true;
 
 uint8_t teller = 0;
 ISR(TIMER2_OVF_vect) {
@@ -120,7 +121,6 @@ void nunchuck_get_data() {
       status[cnt] =  Wire.read();
       cnt++;
   }
-
   if (cnt > 5) {
     nData.x = (status[0]);
     nData.y = (status[1]);
@@ -175,8 +175,9 @@ void initMenu() {
 //(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]]
 //(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2
 
-int temp [26][2];
-int possiblePositions[26][2] = {
+int temp [31][2];
+int possiblePositions[31][2] = {
+  {1,3}, {1,4}, {1,5}, {1,6}, {1,7},
   {3,1}, {4,1}, {5,1}, {6,1}, {7,1},
   {2,3}, {2,5}, {2,7},
   {3,1}, {3,2}, {3,3}, {3,4}, {3,5}, {3,6}, {3,7},
@@ -188,9 +189,9 @@ void spawnCrates(int crate){
   // Spawn crates on random locations
   randomSeed(analogRead(0));
   // Generate random numbers
-  int r1 = random(26);
+  int r1 = random(31);
   // Check if random numbers are unique
-    for (int i = 0; i < 26; i++) {
+    for (int i = 0; i < 31; i++) {
       if (temp[i][0] == possiblePositions[r1][0] && temp[i][1] == possiblePositions[r1][1]) {
         spawnCrates(crate);
       }
@@ -198,8 +199,8 @@ void spawnCrates(int crate){
       temp[crate][0] = possiblePositions[r1][0];
       temp[crate][1] = possiblePositions[r1][1];
     // Draw crates
-    lcd.fillRect(temp[crate][1] * 45 - 45, temp[crate][0] * 48 - 48, 45, 48, RGB(139,69,19));
-    lcd.fillRect(temp[crate][1] * 45 - 43, temp[crate][0] * 48 + - 46, 41, 44, RGB(160,82,45));
+    lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
+    lcd.fillRect(temp[crate][1] * 25 - 23, temp[crate][0] * 27 - 25, 23, 25, RGB(160,82,45));
   }
 
 void initGame() {
@@ -208,7 +209,7 @@ void initGame() {
   // Create all the walls
   for (int w = 0; w < maxBlocksInWidth; w++) {
     for (int i = 0; i < maxBlocksInLength; i++) {
-      lcd.fillRect(w * 90 + 45, i * 96 + 48, 45, 48, RGB(0,0,0));
+      lcd.fillRect(w * 50 + 25, i * 54 + 27, 25, 27, RGB(0,0,0));
     }
   }
   // Spawn all the crates
@@ -350,7 +351,7 @@ void updatePlayers() {
   if (moved) {
     movePlayer(&player1, UpDown, LeftRight);
   }
-  if (nData.buttonZ) {
+  if (nData.buttonZ && !rendering) {
     placeBomb(&player1);
   }
 }
@@ -393,6 +394,7 @@ int main(void) {
       nunchuck_get_data();
       updatePlayers();
       updateBombs();
+      rendering = false;
       _delay_ms(50);
     }
 
