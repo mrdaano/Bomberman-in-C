@@ -336,9 +336,7 @@ void updatePlayers() {
     player1.x = player1.x-5;
     moved = true;
     UpDown = 0;
-  }
-
-  if (nData.y > 131 && player1.y-2 > 0) {
+  } else if (nData.y > 131 && player1.y-2 > 0) {
     player1.y = player1.y-2;
     moved = true;
     LeftRight = 0;
