@@ -232,8 +232,8 @@ void initGame() {
   placePlayers();
 }
 
-int getPlayerXGrid(PLAYER *p) {
-  int x = p->x;
+int getPlayerXGrid(int x) {
+
   if (x > 0 && x < 45) {
     return 1;
   } else if (x > 45 && x < 90) {
@@ -251,8 +251,7 @@ int getPlayerXGrid(PLAYER *p) {
   return 7;
 }
 
-int getPlayerYGrid(PLAYER *p) {
-  int y = p->y;
+int getPlayerYGrid(int y) {
   if (y > 0 && y < 48) {
     return 1;
   } else if (y > 48 && y < 96) {
@@ -298,8 +297,8 @@ bool checkHitWall(PLAYER *p) {
     {4,6}
   };
 
-  int xGrid = getPlayerXGrid(p);
-  int yGrid = getPlayerYGrid(p);
+  int xGrid = getPlayerXGrid(p->x);
+  int yGrid = getPlayerYGrid(p->y);
   for (int i = 0; i < 6; i++) {
     int x = walls[i][1];
     int y = walls[i][0];
