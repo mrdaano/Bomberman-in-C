@@ -407,7 +407,7 @@ int main(void) {
     if (!inGame && lcd.touchRead() == 1) {
       int_least16_t touchX = lcd.touchX();
       int_least16_t touchY = lcd.touchY();
-      if (touchX > 40 && touchX < 234 && touchY > 120 && touchY < 140) {
+      if (touchX > 40 && touchX < 280 && touchY > 100 && touchY < 120) {
         initGame();
         inGame = true;
       } else if((touchX > 15 && touchX < 305 && touchY > 180 && touchY < 195)){
