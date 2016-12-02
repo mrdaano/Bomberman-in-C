@@ -152,8 +152,13 @@ void initMenu() {
   lcd.drawText(20, 20, gameName, RGB(255,255,255), RGB(0,0,0), 4);
 
   String startText = "Start game";
-  lcd.drawText(40, 120, startText, RGB(255,255,255), RGB(30,130,76), 3);
+  lcd.drawText(40, 100, startText, RGB(255,255,255), RGB(30,130,76), 3);
 
+  String turnUpBrightness = "Turn up brightness";
+  lcd.drawText(15, 180, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
+
+  String turnDownBrightness = "Turn down brightness";
+  lcd.drawText(0, 220, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
 }
 // double temp[16][2] = {};
 // double coordinates[16][2] = {
@@ -366,6 +371,15 @@ void updatePlayers() {
   }
 }
 
+int brightness = 5;
+void turnBrightnessUp(int brightness){
+    lcd.led(brightness * 10);
+}
+
+void turnBrightnessDown(int brightness){
+    lcd.led(brightness * 10);
+}
+
 
 int main(void) {
   init();
@@ -393,10 +407,17 @@ int main(void) {
     if (!inGame && lcd.touchRead() == 1) {
       int_least16_t touchX = lcd.touchX();
       int_least16_t touchY = lcd.touchY();
-      if (touchX > 108 && touchX < 234 && touchY > 98 && touchY < 117) {
-        // If button is pressed go to game init
+      if (touchX > 40 && touchX < 234 && touchY > 120 && touchY < 140) {
         initGame();
         inGame = true;
+      } else if((touchX > 15 && touchX < 305 && touchY > 180 && touchY < 195)){
+        brightness += 1;
+        turnBrightnessUp(brightness);
+        _delay_ms(100);
+      } else if(touchX > 0 && touchX < 320 && touchY > 220 && touchY < 235){
+        brightness -= 1;
+        turnBrightnessDown(brightness);
+        _delay_ms(100);
       }
     }
 
