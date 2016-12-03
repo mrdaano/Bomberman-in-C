@@ -46,6 +46,7 @@ PLAYER player1;
 
 String gameName = "Bomberman";
 bool inGame = false;
+bool inSettings = false;
 bool rendering = true;
 
 uint8_t teller = 0;
@@ -154,11 +155,32 @@ void initMenu() {
   String startText = "Start game";
   lcd.drawText(40, 100, startText, RGB(255,255,255), RGB(30,130,76), 3);
 
-  String turnUpBrightness = "Turn up brightness";
-  lcd.drawText(15, 180, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
+  String settingsTxt = "Settings";
+  lcd.drawText(40, 140, settingsTxt, RGB(255,255,255), RGB(34,167,240), 3);
 
-  String turnDownBrightness = "Turn down brightness";
-  lcd.drawText(0, 220, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
+  // String turnUpBrightness = "Turn up brightness";
+  // lcd.drawText(15, 180, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
+  //
+  // String turnDownBrightness = "Turn down brightness";
+  // lcd.drawText(0, 220, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
+}
+
+void initSettings() {
+  lcd.fillScreen(RGB(0,0,0));
+  String title = "Settings";
+  lcd.drawText(20, 20, title, RGB(255,255,255), RGB(0,0,0), 3);
+
+  String backText = "Terug";
+  lcd.drawText(20, 220, backText, RGB(255,255,255), RGB(0,0,0), 2);
+
+  String brightnessTitle = "Brightness";
+  lcd.drawText(15, 80, brightnessTitle, RGB(255,255,255), RGB(0,0,0), 2);
+
+  String turnUpBrightness = "Turn up";
+  lcd.drawText(15, 100, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
+
+  String turnDownBrightness = "Turn down";
+  lcd.drawText(15, 130, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
 }
 // double temp[16][2] = {};
 // double coordinates[16][2] = {
@@ -334,15 +356,17 @@ void updateBombs() {
     lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(217, 30, 24));
   } else if (player1.bomb->placed  && player1.bomb->explodeIn == 0) {
     player1.bomb->placed = false;
-    lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(255, 255, 255));
+    lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(15, 101, 15));
   }
 }
 
 void updatePlayers() {
   int UpDown = 6, LeftRight = 6;
-  if (checkHitWall(&player1)) {
+  if (checkHitWall(&player1) || (player1.x + 20) == 250) {
     return;
   }
+
+  Serial.println(player1.x);
 
   bool moved = false;
   if (nData.x > 135 && player1.x+5 != 320) {
@@ -407,17 +431,27 @@ int main(void) {
     if (!inGame && lcd.touchRead() == 1) {
       int_least16_t touchX = lcd.touchX();
       int_least16_t touchY = lcd.touchY();
-      if (touchX > 40 && touchX < 280 && touchY > 100 && touchY < 120) {
-        initGame();
-        inGame = true;
-      } else if((touchX > 15 && touchX < 305 && touchY > 180 && touchY < 195)){
-        brightness += 1;
-        turnBrightnessUp(brightness);
-        _delay_ms(100);
-      } else if(touchX > 0 && touchX < 320 && touchY > 220 && touchY < 235){
-        brightness -= 1;
-        turnBrightnessDown(brightness);
-        _delay_ms(100);
+      if (!inSettings) {
+        if (touchX > 40 && touchX < 280 && touchY > 100 && touchY < 120) {
+          initGame();
+          inGame = true;
+        } if (touchX > 40 && touchX < 280 && touchY > 140 && touchY < 160) {
+          initSettings();
+          inSettings = true;
+        }
+      } else {
+        if((touchX > 15 && touchX < 104 && touchY > 69 && touchY < 99)){
+          brightness += 1;
+          turnBrightnessUp(brightness);
+          _delay_ms(100);
+        } else if(touchX > 15 && touchX < 139 && touchY > 108 && touchY < 132){
+          brightness -= 1;
+          turnBrightnessDown(brightness);
+          _delay_ms(100);
+        } else if (touchX > 15 && touchX < 73 && touchY > 194 && touchY < 220) {
+          initMenu();
+          inSettings = false;
+        }
       }
     }
 
