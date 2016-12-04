@@ -135,8 +135,8 @@ void nunchuck_get_data() {
 
 void placePlayers() {
   // Init player 1
-  player1.x = 6;
-  player1.y = 6;
+  player1.x = 0;
+  player1.y = 0;
   player1.lives = 3;
   player1.color = RGB(36, 41, 117);
 
@@ -145,7 +145,7 @@ void placePlayers() {
 
   //Draw player
   lcd.fillRect(player1.x + 5, player1.y + 5, 10, 10, RGB(64, 75, 230));
-  lcd.fillRect(player1.x, player1.y, 20, 20, player1.color);
+  lcd.fillRect(player1.x, player1.y, 25, 27, player1.color);
 }
 
 void initMenu() {
@@ -309,22 +309,22 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
     l = p->y + 5;
   }
 
-  lcd.fillRect(u, l, 20, 20, RGB(15, 101, 15));
-  lcd.fillRect(p->x, p->y, 20, 20, p->color);
-  lcd.fillRect(p->x + 5, p->y + 5, 9, 9, RGB(0, 0, 204));
+  lcd.fillRect(u, l, 25, 27, RGB(15, 101, 15));
+  lcd.fillRect(p->x, p->y, 25, 27, p->color);
+  lcd.fillRect(p->x + 7, p->y + 6, 11, 13, RGB(0, 0, 204));
 
   if (UpDown == 1) {
-    lcd.fillRect(p->x + 17, p->y + 3, 3, 3, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 17, p->y + 14, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 21, p->y + 4, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 21, p->y + 19, 4, 4, RGB(64, 75, 230));
   } else if (UpDown == 0) {
-    lcd.fillRect(p->x, p->y + 3, 3, 3, RGB(64, 75, 230));
-    lcd.fillRect(p->x, p->y + 14, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x, p->y + 4, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x, p->y + 19, 4, 4, RGB(64, 75, 230));
   }else if (LeftRight == 1) {
-    lcd.fillRect(p->x + 3, p->y + 17, 3, 3, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 14, p->y + 17, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 4, p->y + 23, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 17, p->y + 23, 4, 4, RGB(64, 75, 230));
   } else if (LeftRight == 0) {
-    lcd.fillRect(p->x + 3, p->y, 3, 3, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 14, p->y, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 4, p->y, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 17, p->y, 4, 4, RGB(64, 75, 230));
   }
 }
 
