@@ -135,14 +135,16 @@ void nunchuck_get_data() {
 
 void placePlayers() {
   // Init player 1
-  player1.x = 3;
-  player1.y = 3;
+  player1.x = 6;
+  player1.y = 6;
   player1.lives = 3;
   player1.color = RGB(36, 41, 117);
 
   player1.bomb = (BOMB *) malloc(sizeof(BOMB));
   player1.bomb->placed = false;
 
+  //Draw player
+  lcd.fillRect(player1.x + 5, player1.y + 5, 10, 10, RGB(64, 75, 230));
   lcd.fillRect(player1.x, player1.y, 20, 20, player1.color);
 }
 
@@ -291,7 +293,6 @@ int getPlayerYGrid(int y) {
   return 5;
 }
 
-
 void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   int u = p->x;
   if (UpDown == 1) {
@@ -310,6 +311,21 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
 
   lcd.fillRect(u, l, 20, 20, RGB(15, 101, 15));
   lcd.fillRect(p->x, p->y, 20, 20, p->color);
+  lcd.fillRect(p->x + 5, p->y + 5, 9, 9, RGB(0, 0, 204));
+
+  if (UpDown == 1) {
+    lcd.fillRect(p->x + 17, p->y + 3, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 17, p->y + 14, 3, 3, RGB(64, 75, 230));
+  } else if (UpDown == 0) {
+    lcd.fillRect(p->x, p->y + 3, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x, p->y + 14, 3, 3, RGB(64, 75, 230));
+  }else if (LeftRight == 1) {
+    lcd.fillRect(p->x + 3, p->y + 17, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 14, p->y + 17, 3, 3, RGB(64, 75, 230));
+  } else if (LeftRight == 0) {
+    lcd.fillRect(p->x + 3, p->y, 3, 3, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 14, p->y, 3, 3, RGB(64, 75, 230));
+  }
 }
 
 bool checkHitWall(PLAYER *p) {
@@ -365,7 +381,7 @@ void updatePlayers() {
     return;
   }
 
-  Serial.println(player1.x);
+  //Serial.println(player1.x);
 
   bool moved = false;
   if (nData.x > 135 && player1.x+5 != 320) {
