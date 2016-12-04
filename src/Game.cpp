@@ -13,7 +13,6 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 
-
 #define maxBlocksInLength 4
 #define maxBlocksInWidth 5
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
@@ -60,7 +59,6 @@ ISR(TIMER2_OVF_vect) {
   }
 }
 
-
 // void writeCalData(void)
 // {
 //   uint16_t i, addr=0;
@@ -78,6 +76,7 @@ ISR(TIMER2_OVF_vect) {
 // }
 //
 // Read the calibration data from EEPROM for the touch input
+
 uint8_t readCalData(void)
 {
   uint16_t i, addr=0;
@@ -136,8 +135,8 @@ void nunchuck_get_data() {
 
 void placePlayers() {
   // Init player 1
-  player1.x = 5;
-  player1.y = 5;
+  player1.x = 3;
+  player1.y = 3;
   player1.lives = 3;
   player1.color = RGB(36, 41, 117);
 
@@ -158,11 +157,6 @@ void initMenu() {
   String settingsTxt = "Settings";
   lcd.drawText(40, 140, settingsTxt, RGB(255,255,255), RGB(34,167,240), 3);
 
-  // String turnUpBrightness = "Turn up brightness";
-  // lcd.drawText(15, 180, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
-  //
-  // String turnDownBrightness = "Turn down brightness";
-  // lcd.drawText(0, 220, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
 }
 
 void initSettings() {
@@ -182,25 +176,6 @@ void initSettings() {
   String turnDownBrightness = "Turn down";
   lcd.drawText(15, 130, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
 }
-// double temp[16][2] = {};
-// double coordinates[16][2] = {
-//   // x, y
-//   1, 3,
-//   1, 4,
-//   1, 5};
-// void generateCrates() {
-//   Serial.begin(9600);
-//   randomSeed(analogRead(0));
-//   int r1 = random(5);
-//   int r2 = random(1, 4);
-//
-// }
-// int coordinates[4][6]= {45, 90, 135, 180, 225, 270,
-//                         0, 0, 0, 0, 0, 0,
-//                         96, 96, 96, 96, 96, 96,
-//                         192, 192, 192, 192, 192, 192};
-//(coordinates[0][temp[0][crate]], coordinates[temp[crate][1]][temp[0][crate]]
-//(coordinates[0][temp[0][crate]] + 2, coordinates[temp[crate][1]][temp[0][crate]] + 2
 
 int temp [30][2];
 int possiblePositions[67][2] = {
@@ -231,10 +206,28 @@ void spawnCrates(int crate){
       Serial.println(temp[crate][0]);
       temp[crate][0] = possiblePositions[r1][0];
       temp[crate][1] = possiblePositions[r1][1];
+
     // Draw crates
     lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
-    lcd.fillRect(temp[crate][1] * 25 - 23, temp[crate][0] * 27 - 25, 21, 23, RGB(160,82,45));
+    lcd.fillRect(temp[crate][1] * 25 - 22, temp[crate][0] * 27 - 24, 19, 21, RGB(160,82,45));
   }
+
+void updateScore(){
+  if(player1.lives == 3){
+    lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
+    lcd.fillCircle(275, 45, 4, RGB(204, 0, 0));
+    lcd.fillCircle(290, 45, 4, RGB(204, 0, 0));
+  } else if(player1.lives == 2){
+    lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
+    lcd.fillCircle(275, 45, 4, RGB(204, 0, 0));
+  } else  if(player1.lives == 1){
+    lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
+  } else if(player1.lives == 0){
+    lcd.fillCircle(260, 45, 4, RGB(47, 79, 79));
+    lcd.fillCircle(275, 45, 4, RGB(47, 79, 79));
+    lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
+  }
+}
 
 void initGame() {
   // Remove every content on screen
@@ -246,17 +239,23 @@ void initGame() {
       lcd.fillRect(w * 50 + 27, i * 54 + 29, 21, 23, RGB(128, 128, 128));
     }
   }
-  // Draw info section
+  // Draw score section
   lcd.fillRect(250, 0, 70, 240, RGB(47,79,79));
   lcd.fillRect(253, 3, 64, 234, RGB(0,0,0));
+  lcd.fillRect(253, 17, 64, 3, RGB(47,79,79));
+
   // Draw text
-  String startText = "Score";
+  String startText = "Score:";
   lcd.drawText(256, 6, startText, RGB(47,79,79), RGB(0,0,0), 1);
+
+  String player1 = "Player1";
+  lcd.drawText(256, 27, player1, RGB(47,79,79), RGB(0,0,0), 1);
   // Spawn all the crates
   for (int i = 0; i < 30; i++) {
     spawnCrates(i);
   }
   placePlayers();
+  updateScore();
 }
 
 int getPlayerXGrid(int x) {
@@ -403,7 +402,6 @@ void turnBrightnessUp(int brightness){
 void turnBrightnessDown(int brightness){
     lcd.led(brightness * 10);
 }
-
 
 int main(void) {
   init();
