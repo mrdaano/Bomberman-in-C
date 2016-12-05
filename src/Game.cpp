@@ -367,13 +367,21 @@ void placeBomb(PLAYER *p) {
     p->bomb->explodeIn = 5;
   }
 }
-
 void updateBombs() {
   if (player1.bomb->placed  && player1.bomb->explodeIn != 0) {
-    lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(217, 30, 24));
+    //Draw bomb
+    lcd.fillRect(player1.bomb->x + 10, player1.bomb->y + 6, 7, 3, RGB(45, 45, 51));
+    lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 7, RGB(48, 48, 57));
+    lcd.fillCircle(player1.bomb->x + 11, player1.bomb->y + 14, 3, RGB(66, 66, 75));
+    lcd.fillRect(player1.bomb->x + 12, player1.bomb->y + 3, 2, 2, RGB(255, 255, 255));
+    lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 1, 1, RGB(215, 144, 37));
   } else if (player1.bomb->placed  && player1.bomb->explodeIn == 0) {
     player1.bomb->placed = false;
-    lcd.fillRect(player1.bomb->x, player1.bomb->y, 10, 10, RGB(15, 101, 15));
+    // Draw explosion animation
+    lcd.fillRect(player1.bomb->x + 10, player1.bomb->y, 14, 14, RGB(15, 101, 15));
+    lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 8, RGB(209, 199, 57));
+    lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 6, RGB(215, 84, 37));
+    lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 3, RGB(215, 50, 37));
   }
 }
 
