@@ -264,17 +264,17 @@ void initGame() {
 
 int getPlayerXGrid(int x) {
 
-  if (x > 0 && x < 45) {
+  if (x > 0 && x < 25) {
     return 1;
-  } else if (x > 45 && x < 90) {
+  } else if (x > 25 && x < 50) {
     return 2;
-  } else if (x > 90 && x < 135) {
+  } else if (x > 50 && x < 75) {
     return 3;
-  } else if (x > 135 && x < 180) {
+  } else if (x > 75 && x < 100) {
     return 4;
-  } else if (x > 180 && x < 225) {
+  } else if (x > 100 && x < 125) {
     return 5;
-  } else if (x > 225 && x < 270) {
+  } else if (x > 125 && x < 150) {
     return 6;
   }
 
@@ -282,13 +282,13 @@ int getPlayerXGrid(int x) {
 }
 
 int getPlayerYGrid(int y) {
-  if (y > 0 && y < 48) {
+  if (y > 0 && y < 27) {
     return 1;
-  } else if (y > 48 && y < 96) {
+  } else if (y > 27 && y < 54) {
     return 2;
-  } else if (y > 96 && y < 144) {
+  } else if (y > 54 && y < 81) {
     return 3;
-  } else if (y > 144 && y < 192) {
+  } else if (y > 81 && y < 108) {
     return 4;
   }
 
@@ -330,8 +330,10 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   }
 }
 
-bool checkHitWall(PLAYER *p) {
-  bool returnVal = false;
+bool checkHitWall(PLAYER *p, int side) {
+  if (((p->x + 20) == 245) & (side == 1)) {
+    return true;
+  }
   int walls[6][2] = {
     {2,2},
     {2,4},
@@ -341,22 +343,21 @@ bool checkHitWall(PLAYER *p) {
     {4,6}
   };
 
-  int xGrid = getPlayerXGrid(p->x);
-  int yGrid = getPlayerYGrid(p->y);
+  int xGrid = getPlayerXGrid(p->x + 20);
+  int yGrid = getPlayerYGrid(p->y + 20);
   for (int i = 0; i < 6; i++) {
     int x = walls[i][1];
     int y = walls[i][0];
 
-    if (x == xGrid && y == yGrid) {
-      p->x = (p->x - 10);
-      p->y = (p->y - 5);
-      movePlayer(p, 6, 6);
-      Serial.println("In muur");
-      return true;
+    if (side == 1) {
+      if ((xGrid == x) & (yGrid == y)) {
+        return true;
+      }
     }
+
   }
 
-  return returnVal;
+  return false;
 }
 
 void placeBomb(PLAYER *p) {
@@ -387,14 +388,14 @@ void updateBombs() {
 
 void updatePlayers() {
   int UpDown = 6, LeftRight = 6;
-  if (checkHitWall(&player1) || (player1.x + 20) == 250) {
-    return;
-  }
 
   //Serial.println(player1.x);
 
   bool moved = false;
   if (nData.x > 135 && player1.x+5 != 320) {
+    if (checkHitWall(&player1, 1)) {
+      return;
+    }
     player1.x = player1.x+5;
     moved = true;
     UpDown = 1;
