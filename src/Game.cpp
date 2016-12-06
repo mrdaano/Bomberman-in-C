@@ -346,11 +346,11 @@ bool checkHitWall(PLAYER *p, int side) {
 
   int xGrid = 0, yGrid = 0;
   if (side == 1) {
-    xGrid = getPlayerXGrid(p->x + 20);
-    yGrid = getPlayerYGrid(p->y + 20);
+    xGrid = getPlayerXGrid(p->x + 25);
+    yGrid = getPlayerYGrid(p->y + 27);
   } else if (side == 3) {
-    xGrid = getPlayerXGrid(p->x + 20);
-    yGrid = getPlayerYGrid(p->y + 20);
+    xGrid = getPlayerXGrid(p->x + 25);
+    yGrid = getPlayerYGrid(p->y + 27);
   } else if (side == 4) {
     xGrid = getPlayerXGrid(p->x - 20);
     yGrid = getPlayerYGrid(p->y - 20);
