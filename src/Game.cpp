@@ -22,6 +22,7 @@ typedef struct {
   int y;
   int explodeIn;
   bool placed;
+  bool exploded;
 } BOMB;
 
 typedef struct {
@@ -53,7 +54,7 @@ ISR(TIMER2_OVF_vect) {
   teller++;
   if ( teller >= 60 ) {
     teller = 0;
-    if (player1.bomb->placed && player1.bomb->explodeIn != 0) {
+    if ((player1.bomb->placed || player1.bomb->exploded) && player1.bomb->explodeIn != 0) {
       player1.bomb->explodeIn--;
     }
   }
@@ -374,6 +375,7 @@ void placeBomb(PLAYER *p) {
     p->bomb->x = p->x;
     p->bomb->y = p->y;
     p->bomb->explodeIn = 5;
+    p->bomb->exploded = false;
   }
 }
 void updateBombs() {
@@ -386,11 +388,16 @@ void updateBombs() {
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 1, 1, RGB(215, 144, 37));
   } else if (player1.bomb->placed  && player1.bomb->explodeIn == 0) {
     player1.bomb->placed = false;
+    player1.bomb->exploded = true;
+    player1.bomb->explodeIn = 3;
     // Draw explosion animation
     lcd.fillRect(player1.bomb->x + 10, player1.bomb->y, 14, 14, RGB(15, 101, 15));
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 8, RGB(209, 199, 57));
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 6, RGB(215, 84, 37));
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 3, RGB(215, 50, 37));
+  } else if (player1.bomb->exploded && player1.bomb->explodeIn == 0) {
+    player1.bomb->exploded = false;
+    lcd.fillRect(player1.bomb->x, player1.bomb->y, 22, 23, RGB(11, 102, 41));
   }
 }
 
