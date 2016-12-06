@@ -343,16 +343,24 @@ bool checkHitWall(PLAYER *p, int side) {
     {4,6}
   };
 
-  int xGrid = getPlayerXGrid(p->x + 20);
-  int yGrid = getPlayerYGrid(p->y + 20);
+  int xGrid = 0, yGrid = 0;
+  if (side == 1) {
+    xGrid = getPlayerXGrid(p->x + 20);
+    yGrid = getPlayerYGrid(p->y + 20);
+  } else if (side == 3) {
+    xGrid = getPlayerXGrid(p->x + 20);
+    yGrid = getPlayerYGrid(p->y + 20);
+  } else if (side == 4) {
+    xGrid = getPlayerXGrid(p->x - 20);
+    yGrid = getPlayerYGrid(p->y - 20);
+  }
+
   for (int i = 0; i < 6; i++) {
     int x = walls[i][1];
     int y = walls[i][0];
 
-    if (side == 1) {
-      if ((xGrid == x) & (yGrid == y)) {
-        return true;
-      }
+    if ((xGrid == x) & (yGrid == y)) {
+      return true;
     }
 
   }
@@ -404,10 +412,16 @@ void updatePlayers() {
     moved = true;
     UpDown = 0;
   } else if (nData.y > 131 && player1.y-2 > 0) {
+    if (checkHitWall(&player1, 4)) {
+      return;
+    }
     player1.y = player1.y-5;
     moved = true;
     LeftRight = 0;
   } else if (nData.y < 121 && player1.x-2 < 240) {
+    if (checkHitWall(&player1, 3)) {
+      return;
+    }
     player1.y = player1.y+5;
     moved = true;
     LeftRight = 1;
