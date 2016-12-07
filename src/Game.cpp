@@ -272,11 +272,11 @@ int getPlayerXGrid(int x) {
     return 2;
   } else if (x >= 50 && x <= 75) {
     return 3;
-  } else if (x > 75 && x < 100) {
+  } else if (x >= 75 && x <= 100) {
     return 4;
-  } else if (x > 100 && x < 125) {
+  } else if (x >= 100 && x <= 125) {
     return 5;
-  } else if (x > 125 && x < 150) {
+  } else if (x >= 125 && x <= 150) {
     return 6;
   }
 
@@ -288,9 +288,9 @@ int getPlayerYGrid(int y) {
     return 1;
   } else if (y >= 27 && y <= 54) {
     return 2;
-  } else if (y > 54 && y < 81) {
+  } else if (y >= 54 && y <= 81) {
     return 3;
-  } else if (y > 81 && y < 108) {
+  } else if (y >= 81 && y <= 108) {
     return 4;
   }
 
@@ -417,7 +417,7 @@ void updateBombs() {
 
 void updatePlayers() {
   int UpDown = 6, LeftRight = 6;
-  
+
   bool moved = false;
   if (nData.x > 135 && player1.x+5 != 320) {
     player1.x = player1.x+5;
