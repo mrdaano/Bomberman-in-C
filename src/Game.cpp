@@ -145,8 +145,8 @@ void placePlayers() {
   player1.bomb->placed = false;
 
   //Draw player
-  lcd.fillRect(player1.x + 5, player1.y + 5, 10, 10, RGB(64, 75, 230));
-  lcd.fillRect(player1.x, player1.y, 25, 27, player1.color);
+  lcd.fillRect(player1.x + 7, player1.y + 8, 10, 10, RGB(64, 75, 230));
+  lcd.fillRect(player1.x + 2, player1.y + 3, 20, 20, player1.color);
 }
 
 void initMenu() {
@@ -158,7 +158,7 @@ void initMenu() {
   lcd.drawText(40, 100, startText, RGB(255,255,255), RGB(30,130,76), 3);
 
   String settingsTxt = "Settings";
-  lcd.drawText(40, 140, settingsTxt, RGB(255,255,255), RGB(34,167,240), 3);
+  lcd.drawText(40, 150, settingsTxt, RGB(255,255,255), RGB(34,167,240), 3);
 
 }
 
@@ -168,20 +168,20 @@ void initSettings() {
   lcd.drawText(20, 20, title, RGB(255,255,255), RGB(0,0,0), 3);
 
   String backText = "Terug";
-  lcd.drawText(20, 220, backText, RGB(255,255,255), RGB(0,0,0), 2);
+  lcd.drawText(230, 220, backText, RGB(255,255,255), RGB(0,0,0), 2);
 
-  String brightnessTitle = "Brightness";
+  String brightnessTitle = "Brightness:";
   lcd.drawText(15, 80, brightnessTitle, RGB(255,255,255), RGB(0,0,0), 2);
 
   String turnUpBrightness = "Turn up";
-  lcd.drawText(15, 100, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
+  lcd.drawText(15, 120, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
 
   String turnDownBrightness = "Turn down";
-  lcd.drawText(15, 130, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
+  lcd.drawText(15, 170, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
 }
 
 int temp [30][2];
-int possiblePositions[67][2] = {
+int possiblePositions[66][2] = {
   {1,3}, {1,4}, {1,5}, {1,6}, {1,7}, {1,8}, {1,9}, {1,10},
   {2,3}, {2,5}, {2,7}, {2,9},
   {3,1}, {3,2}, {3,3}, {3,4}, {3,5}, {3,6}, {3,7}, {3,8}, {3,9}, {3,10},
@@ -190,25 +190,27 @@ int possiblePositions[67][2] = {
   {6,1}, {6,3}, {6,5}, {6,7}, {6,9},
   {7,1}, {7,2}, {7,3}, {7,4}, {7,5}, {7,6}, {7,7}, {7,8}, {7,9}, {7,10},
   {8,1}, {8,3}, {8,5}, {8,7}, {8,9},
-  {9,1}, {9,2}, {9,3}, {9,4}, {9,5}, {9,6}, {9,7}, {9,8}, {9,9}, {9,10}
+  {9,1}, {9,2}, {9,3}, {9,4}, {9,5}, {9,6}, {9,7}, {9,8}, {9,9}
 };
 
 void spawnCrates(int crate){
   // Spawn crates on random locations
   randomSeed(analogRead(0));
   // Generate random numbers
-  int r1 = random(67);
+  int r1 = random(66);
+  bool isUnique = true;
   // Check if random numbers are unique
-    for (int i = 0; i < 67; i++) {
+    for (int i = 0; i < 66; i++) {
       if (temp[i][0] == possiblePositions[r1][0] && temp[i][1] == possiblePositions[r1][1]) {
         spawnCrates(crate);
+        isUnique = false;
       }
     }
-      Serial.println(temp[crate][1]);
-      Serial.println("\n");
-      Serial.println(temp[crate][0]);
+
+    if (isUnique) {
       temp[crate][0] = possiblePositions[r1][0];
       temp[crate][1] = possiblePositions[r1][1];
+    }
 
     // Draw crates
     lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
@@ -250,7 +252,7 @@ void initGame() {
   lcd.fillRect(253, 17, 64, 3, RGB(47,79,79));
 
   // Draw text
-  String startText = "Score:";
+  String startText = "Lifes:";
   lcd.drawText(256, 6, startText, RGB(47,79,79), RGB(0,0,0), 1);
 
   String player1 = "Player1";
@@ -264,12 +266,11 @@ void initGame() {
 }
 
 int getPlayerXGrid(int x) {
-
-  if (x > 0 && x < 25) {
+  if (x >= 0 && x <= 25) {
     return 1;
-  } else if (x > 25 && x < 50) {
+  } else if (x >= 25 && x <= 50) {
     return 2;
-  } else if (x > 50 && x < 75) {
+  } else if (x >= 50 && x <= 75) {
     return 3;
   } else if (x > 75 && x < 100) {
     return 4;
@@ -283,9 +284,9 @@ int getPlayerXGrid(int x) {
 }
 
 int getPlayerYGrid(int y) {
-  if (y > 0 && y < 27) {
+  if (y >= 0 && y <= 27) {
     return 1;
-  } else if (y > 27 && y < 54) {
+  } else if (y >= 27 && y <= 54) {
     return 2;
   } else if (y > 54 && y < 81) {
     return 3;
@@ -312,27 +313,27 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
     l = p->y + 5;
   }
 
-  lcd.fillRect(u, l, 25, 27, RGB(15, 101, 15));
-  lcd.fillRect(p->x, p->y, 25, 27, p->color);
-  lcd.fillRect(p->x + 7, p->y + 6, 11, 13, RGB(0, 0, 204));
+  lcd.fillRect(u + 2, l + 3, 20, 20, RGB(11, 102, 41));
+  lcd.fillRect(p->x + 2, p->y + 3, 20, 20, p->color);
+  lcd.fillRect(p->x + 7, p->y + 8, 10, 10, RGB(0, 0, 204));
 
   if (UpDown == 1) {
-    lcd.fillRect(p->x + 21, p->y + 4, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 21, p->y + 19, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 18, p->y + 5, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 18, p->y + 17, 4, 4, RGB(64, 75, 230));
   } else if (UpDown == 0) {
-    lcd.fillRect(p->x, p->y + 4, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x, p->y + 19, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 2, p->y + 5, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 2, p->y + 17, 4, 4, RGB(64, 75, 230));
   }else if (LeftRight == 1) {
-    lcd.fillRect(p->x + 4, p->y + 23, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 17, p->y + 23, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 4, p->y + 19, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 16, p->y + 19, 4, 4, RGB(64, 75, 230));
   } else if (LeftRight == 0) {
-    lcd.fillRect(p->x + 4, p->y, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 17, p->y, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 4, p->y + 3, 4, 4, RGB(64, 75, 230));
+    lcd.fillRect(p->x + 16, p->y + 3, 4, 4, RGB(64, 75, 230));
   }
 }
 
 bool checkHitWall(PLAYER *p, int side) {
-  if (((p->x + 20) == 245) & (side == 1)) {
+  if (((p->x + 20) == 245) && (side == 1)) {
     return true;
   }
   int walls[6][2] = {
@@ -344,23 +345,36 @@ bool checkHitWall(PLAYER *p, int side) {
     {4,6}
   };
 
-  int xGrid = 0, yGrid = 0;
+  int xGridB = 0, yGridB = 0;
+  int xGridE = 0, yGridE = 0;
   if (side == 1) {
-    xGrid = getPlayerXGrid(p->x + 25);
-    yGrid = getPlayerYGrid(p->y + 27);
+    xGridB = getPlayerXGrid(p->x + 25);
+    yGridB = getPlayerYGrid(p->y);
+    xGridE = getPlayerXGrid(p->x + 25);
+    yGridE = getPlayerYGrid(p->y + 26);
+  } else if (side == 2) {
+    xGridB = getPlayerXGrid(p->x);
+    yGridB = getPlayerYGrid(p->y);
+    xGridE = getPlayerXGrid(p->x);
+    yGridE = getPlayerYGrid(p->y + 25);
   } else if (side == 3) {
-    xGrid = getPlayerXGrid(p->x + 25);
-    yGrid = getPlayerYGrid(p->y + 27);
+    xGridB = getPlayerXGrid(p->x + 1);
+    yGridB = getPlayerYGrid(p->y + 25);
+    xGridE = getPlayerXGrid(p->x + 24);
+    yGridE = getPlayerYGrid(p->y + 26);
   } else if (side == 4) {
-    xGrid = getPlayerXGrid(p->x - 20);
-    yGrid = getPlayerYGrid(p->y - 20);
+    xGridB = getPlayerXGrid(p->x + 1);
+    yGridB = getPlayerYGrid(p->y);
+    xGridE = getPlayerXGrid(p->x + 24);
+    yGridE = getPlayerYGrid(p->y);
   }
 
   for (int i = 0; i < 6; i++) {
     int x = walls[i][1];
     int y = walls[i][0];
-
-    if ((xGrid == x) & (yGrid == y)) {
+      if (((xGridB == x) && (yGridB == y)) || ((xGridE == x) && (yGridE == y))) {
+      return true;
+    } else if (((xGridB == x) && (yGridB == y)) && ((xGridE == x) && (yGridE == y))) {
       return true;
     }
 
@@ -403,35 +417,40 @@ void updateBombs() {
 
 void updatePlayers() {
   int UpDown = 6, LeftRight = 6;
-
-  //Serial.println(player1.x);
-
+  
   bool moved = false;
   if (nData.x > 135 && player1.x+5 != 320) {
+    player1.x = player1.x+5;
     if (checkHitWall(&player1, 1)) {
+      player1.x = player1.x-5;
       return;
     }
-    player1.x = player1.x+5;
     moved = true;
     UpDown = 1;
-  } else if(nData.x < 125 && player1.x-5 != 0) {
+  } else if(nData.x < 125 && !(player1.x-5 < 0)) {
     player1.x = player1.x-5;
+    if (checkHitWall(&player1, 2)) {
+      player1.x = player1.x+5;
+      return;
+    }
     moved = true;
     UpDown = 0;
-  } else if (nData.y > 131 && player1.y-2 > 0) {
-    if (checkHitWall(&player1, 4)) {
-      return;
-    }
-    player1.y = player1.y-5;
-    moved = true;
-    LeftRight = 0;
-  } else if (nData.y < 121 && player1.x-2 < 240) {
-    if (checkHitWall(&player1, 3)) {
-      return;
-    }
+  } else if (nData.y < 121 && player1.y+29 < 240) {
     player1.y = player1.y+5;
+    if (checkHitWall(&player1, 3)) {
+      player1.y = player1.y-5;
+      return;
+    }
     moved = true;
     LeftRight = 1;
+  } else if (nData.y > 131 && player1.y-2 > 0) {
+    player1.y = player1.y-5;
+    if (checkHitWall(&player1, 4)) {
+      player1.y = player1.y+5;
+      return;
+    }
+    moved = true;
+    LeftRight = 0;
   }
 
   if (moved) {
@@ -481,20 +500,24 @@ int main(void) {
         if (touchX > 40 && touchX < 280 && touchY > 100 && touchY < 120) {
           initGame();
           inGame = true;
-        } if (touchX > 40 && touchX < 280 && touchY > 140 && touchY < 160) {
+        } if (touchX > 40 && touchX < 250 && touchY > 150 && touchY < 170) {
           initSettings();
           inSettings = true;
         }
       } else {
-        if((touchX > 15 && touchX < 104 && touchY > 69 && touchY < 99)){
-          brightness += 1;
-          turnBrightnessUp(brightness);
-          _delay_ms(100);
-        } else if(touchX > 15 && touchX < 139 && touchY > 108 && touchY < 132){
-          brightness -= 1;
-          turnBrightnessDown(brightness);
-          _delay_ms(100);
-        } else if (touchX > 15 && touchX < 73 && touchY > 194 && touchY < 220) {
+        if((touchX > 15 && touchX < 110 && touchY > 120 && touchY < 130)){
+          if(brightness < 10){
+            brightness += 2;
+            turnBrightnessUp(brightness);
+            _delay_ms(100);
+          }
+        } else if(touchX > 15 && touchX < 139 && touchY > 170 && touchY < 180){
+          if(brightness > 1){
+            brightness -= 2;
+            turnBrightnessDown(brightness);
+            _delay_ms(100);
+          }
+        } else if (touchX > 230 && touchX < 300 && touchY > 220 && touchY < 240) {
           initMenu();
           inSettings = false;
         }
