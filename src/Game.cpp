@@ -278,9 +278,15 @@ int getPlayerXGrid(int x) {
     return 5;
   } else if (x >= 125 && x <= 150) {
     return 6;
+  } else if (x >= 150 && x <= 175) {
+    return 7;
+  } else if (x >= 175 && x <= 200) {
+    return 8;
+  } else if (x >= 200 && x <= 225) {
+    return 9;
   }
 
-  return 7;
+  return 10;
 }
 
 int getPlayerYGrid(int y) {
@@ -292,9 +298,15 @@ int getPlayerYGrid(int y) {
     return 3;
   } else if (y >= 81 && y <= 108) {
     return 4;
+  } else if (y >= 108 && y <= 135) {
+    return 5;
+  } else if (y >= 135 && y <= 162) {
+    return 6;
+  } else if (y >= 162 && y <= 189) {
+    return 7;
   }
 
-  return 5;
+  return 8;
 }
 
 void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
@@ -336,13 +348,11 @@ bool checkHitWall(PLAYER *p, int side) {
   if (((p->x + 20) == 245) && (side == 1)) {
     return true;
   }
-  int walls[6][2] = {
-    {2,2},
-    {2,4},
-    {2,6},
-    {4,2},
-    {4,4},
-    {4,6}
+  int walls[20][2] = {
+    {2,2}, {2,4}, {2,6}, {2,8}, {2,10},
+    {4,2}, {4,4}, {4,6}, {4,8}, {4,10},
+    {6,2}, {6,4}, {6,6}, {6,8}, {6,10},
+    {8,2}, {8,4}, {8,6}, {8,8}, {8,10}
   };
 
   int xGridB = 0, yGridB = 0;
@@ -369,9 +379,19 @@ bool checkHitWall(PLAYER *p, int side) {
     yGridE = getPlayerYGrid(p->y);
   }
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 20; i++) {
     int x = walls[i][1];
     int y = walls[i][0];
+      if (((xGridB == x) && (yGridB == y)) || ((xGridE == x) && (yGridE == y))) {
+      return true;
+    } else if (((xGridB == x) && (yGridB == y)) && ((xGridE == x) && (yGridE == y))) {
+      return true;
+    }
+
+  }
+  for (int i = 0; i < 30; i++) {
+    int x = temp[i][1];
+    int y = temp[i][0];
       if (((xGridB == x) && (yGridB == y)) || ((xGridE == x) && (yGridE == y))) {
       return true;
     } else if (((xGridB == x) && (yGridB == y)) && ((xGridE == x) && (yGridE == y))) {
