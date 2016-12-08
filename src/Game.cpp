@@ -215,6 +215,12 @@ void spawnCrates(int crate){
     // Draw crates
     lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
     lcd.fillRect(temp[crate][1] * 25 - 22, temp[crate][0] * 27 - 24, 19, 21, RGB(160,82,45));
+    lcd.fillTriangle(temp[crate][1] * 25 - 19, temp[crate][0] * 27 - 23,
+                     temp[crate][1] * 25 - 6, temp[crate][0] * 27 - 8,
+                     temp[crate][1] * 25 - 6, temp[crate][0] * 27 - 22, RGB(139,69,19));
+    lcd.fillTriangle(temp[crate][1] * 25 - 20, temp[crate][0] * 27 - 20,
+                     temp[crate][1] * 25 - 20, temp[crate][0] * 27 - 6,
+                     temp[crate][1] * 25 - 7, temp[crate][0] * 27 - 5, RGB(139,69,19));
   }
 
 void updateScore(){
