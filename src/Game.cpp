@@ -231,8 +231,11 @@ void updateScore(){
   } else if(player1.lives == 2){
     lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
     lcd.fillCircle(275, 45, 4, RGB(204, 0, 0));
+    lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
   } else  if(player1.lives == 1){
     lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
+    lcd.fillCircle(275, 45, 4, RGB(47, 79, 79));
+    lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
   } else if(player1.lives == 0){
     lcd.fillCircle(260, 45, 4, RGB(47, 79, 79));
     lcd.fillCircle(275, 45, 4, RGB(47, 79, 79));
@@ -418,6 +421,33 @@ void placeBomb(PLAYER *p) {
     p->bomb->exploded = false;
   }
 }
+
+void updateBombDamage(BOMB *b) {
+  int x = getPlayerXGrid(b->x + 7);
+  int y = getPlayerYGrid(b->y + 7);
+
+  int player1X = getPlayerXGrid(player1.x);
+  int player1Y = getPlayerYGrid(player1.y);
+
+  if ((player1X == x && player1Y == y) || (player1X == (x+1) && player1Y == y) || (player1X == (x-1) && player1Y == y) || (player1X == x && player1Y == (y+1)) || (player1X == x && player1Y == (y-1))) {
+    player1.lives--;
+    updateScore();
+  }
+
+  for (int i = 0; i < 30; i++) {
+    int crateY = temp[i][0];
+    int crateX = temp[i][1];
+
+    // Check if crate is on the right, left, top or bottom
+    if ((crateX == (x+1) && crateY == y) || (crateX == (x-1) && crateY == y) || (crateX == x && crateY == (y + 1)) || (crateX == x && crateY == (y - 1))) {
+      temp[i][0] = 0;
+      temp[i][1] = 0;
+      lcd.fillRect(crateX * 25 - 25, crateY * 27 - 27, 25, 27, RGB(11, 102, 41));
+      return;
+    }
+  }
+}
+
 void updateBombs() {
   if (player1.bomb->placed  && player1.bomb->explodeIn != 0) {
     //Draw bomb
@@ -435,6 +465,7 @@ void updateBombs() {
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 8, RGB(209, 199, 57));
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 6, RGB(215, 84, 37));
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 3, RGB(215, 50, 37));
+    updateBombDamage(player1.bomb);
   } else if (player1.bomb->exploded && player1.bomb->explodeIn == 0) {
     player1.bomb->exploded = false;
     lcd.fillRect(player1.bomb->x, player1.bomb->y, 22, 23, RGB(11, 102, 41));
