@@ -1,6 +1,6 @@
 #include <avr/io.h>
 #include <Wire.h>
-//include <time.h>
+#include <time.h>
 #include <stdlib.h>
 #include <SPI.h>
 #include <GraphicsLib.h>
@@ -49,11 +49,16 @@ bool inGame = false;
 bool inSettings = false;
 bool rendering = true;
 
+String text;
+uint8_t sec = 0;
 uint8_t teller = 0;
+
 ISR(TIMER2_OVF_vect) {
   teller++;
   if ( teller >= 60 ) {
     teller = 0;
+    sec++;
+    text = sec;
     if ((player1.bomb->placed || player1.bomb->exploded) && player1.bomb->explodeIn != 0) {
       player1.bomb->explodeIn--;
     }
@@ -259,6 +264,8 @@ void initGame() {
   lcd.fillRect(250, 0, 70, 240, RGB(47,79,79));
   lcd.fillRect(253, 3, 64, 234, RGB(0,0,0));
   lcd.fillRect(253, 17, 64, 3, RGB(47,79,79));
+  lcd.fillRect(253, 154, 64, 3, RGB(47,79,79));
+  lcd.fillRect(253, 170, 64, 3, RGB(47,79,79));
 
   // Draw text
   String startText = "Lifes:";
@@ -266,6 +273,10 @@ void initGame() {
 
   String player1 = "Player1";
   lcd.drawText(256, 27, player1, RGB(47,79,79), RGB(0,0,0), 1);
+
+  String score = "Score:";
+  lcd.drawText(256, 160, score, RGB(47,79,79), RGB(0,0,0), 1);
+
   // Spawn all the crates
   for (int i = 0; i < 30; i++) {
     spawnCrates(i);
@@ -586,6 +597,7 @@ int main(void) {
       updatePlayers();
       updateBombs();
       rendering = false;
+      lcd.drawText(256, 180, text, RGB(47,108,49), RGB(0,0,0), 1);
       _delay_ms(50);
     }
 
