@@ -50,12 +50,12 @@ bool inSettings = false;
 bool rendering = true;
 
 String text;
-uint8_t sec = 0;
+uint16_t sec = 0;
 uint8_t teller = 0;
 
 ISR(TIMER2_OVF_vect) {
   teller++;
-  if ( teller >= 60 ) {
+  if ( teller >= 80 ) {
     teller = 0;
     sec++;
     text = sec;
@@ -428,7 +428,7 @@ void placeBomb(PLAYER *p) {
     p->bomb->placed = true;
     p->bomb->x = p->x;
     p->bomb->y = p->y;
-    p->bomb->explodeIn = 5;
+    p->bomb->explodeIn = 4;
     p->bomb->exploded = false;
   }
 }
