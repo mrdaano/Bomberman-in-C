@@ -50,6 +50,7 @@ bool inSettings = false;
 bool rendering = true;
 
 String text;
+String highscore = "0";
 uint16_t sec = 0;
 uint8_t teller = 0;
 
@@ -57,10 +58,12 @@ ISR(TIMER2_OVF_vect) {
   teller++;
   if ( teller >= 80 ) {
     teller = 0;
-    sec++;
-    text = sec;
-    if ((player1.bomb->placed || player1.bomb->exploded) && player1.bomb->explodeIn != 0) {
-      player1.bomb->explodeIn--;
+    if (inGame) {
+      sec++;
+      text = sec;
+      if ((player1.bomb->placed || player1.bomb->exploded) && player1.bomb->explodeIn != 0) {
+        player1.bomb->explodeIn--;
+      }
     }
   }
 }
@@ -165,6 +168,10 @@ void initMenu() {
   String settingsTxt = "Settings";
   lcd.drawText(40, 150, settingsTxt, RGB(255,255,255), RGB(34,167,240), 3);
 
+  String highScoreText = "Highscore:";
+  lcd.drawText(20, 200, highScoreText, RGB(255,255,255), RGB(0,0,0), 1);
+  lcd.drawText(100, 200, highscore, RGB(255,255,255), RGB(0,0,0), 1);
+
 }
 
 void initSettings() {
@@ -245,6 +252,10 @@ void updateScore(){
     lcd.fillCircle(260, 45, 4, RGB(47, 79, 79));
     lcd.fillCircle(275, 45, 4, RGB(47, 79, 79));
     lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
+
+    inGame = false;
+    highscore = sec;
+    initMenu();
   }
 }
 
