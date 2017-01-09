@@ -11,6 +11,7 @@ int  RECEIVEIR::checkData(decode_results *results)
 	if (irparams.rcvstate != STATE_STOP)  return false ;
 
 	if (receivingIR(results)) {
+		goOn();
     return true;
   }
 

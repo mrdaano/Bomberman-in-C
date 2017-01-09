@@ -8,7 +8,7 @@
 
 class decode_results {
 	public:
-		unsigned long          value;        // Decoded value [max 32-bits]
+		unsigned int          value;        // Decoded value [max 32-bits]
 		int                    bits;         // Number of bits in decoded value
 		volatile unsigned int  *rawbuf;      // Raw intervals in 50uS ticks
 		int                    rawlen;       // Number of records in rawbuf
@@ -39,19 +39,6 @@ public:
 private:
   bool receivingIR(decode_results *results);
 };
-
-#define DEBUG  0
-
-//------------------------------------------------------------------------------
-// Debug directives
-//
-#if DEBUG
-#	define DBG_PRINT(...)    Serial.print(__VA_ARGS__)
-#	define DBG_PRINTLN(...)  Serial.println(__VA_ARGS__)
-#else
-#	define DBG_PRINT(...)
-#	define DBG_PRINTLN(...)
-#endif
 
 int  MATCH       (int measured, int desired) ;
 int  MATCH_MARK  (int measured_ticks, int desired_us) ;

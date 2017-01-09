@@ -47,16 +47,16 @@ int main(void) {
 
   decode_results results;
 
+  pinMode(8, OUTPUT);
+
 
   RECEIVEIR.enableIR0(); // Start the receiver
 
   for(;;) {
     if (RECEIVEIR.checkData(&results)) {
-      Serial.println("hoi");
       Serial.println(results.value, HEX);
-      RECEIVEIR.goOn();
+      // RECEIVEIR.goOn();
 
     }
-    _delay_ms(1000);
   }
 }
