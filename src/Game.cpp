@@ -56,7 +56,7 @@ uint8_t teller = 0;
 
 ISR(TIMER2_OVF_vect) {
   teller++;
-  if ( teller >= 80 ) {
+  if ( teller >= 30 ) {
     teller = 0;
     if (inGame) {
       sec++;
@@ -147,14 +147,14 @@ void placePlayers() {
   player1.x = 0;
   player1.y = 0;
   player1.lives = 3;
-  player1.color = RGB(36, 41, 117);
+  player1.color = RGB(0, 0, 0);
 
   player1.bomb = (BOMB *) malloc(sizeof(BOMB));
   player1.bomb->placed = false;
 
   //Draw player
-  lcd.fillRect(player1.x + 7, player1.y + 8, 10, 10, RGB(64, 75, 230));
-  lcd.fillRect(player1.x + 2, player1.y + 3, 20, 20, player1.color);
+  lcd.fillCircle(player1.x + 12, player1.y + 12, 10, player1.color);
+  lcd.fillCircle(player1.x + 12, player1.y + 12, 5, RGB(64, 75, 230));
 }
 
 void initMenu() {
@@ -169,8 +169,8 @@ void initMenu() {
   lcd.drawText(40, 150, settingsTxt, RGB(255,255,255), RGB(34,167,240), 3);
 
   String highScoreText = "Highscore:";
-  lcd.drawText(20, 200, highScoreText, RGB(255,255,255), RGB(0,0,0), 1);
-  lcd.drawText(100, 200, highscore, RGB(255,255,255), RGB(0,0,0), 1);
+  lcd.drawText(40, 200, highScoreText, RGB(255,255,255), RGB(0,0,0), 1);
+  lcd.drawText(120, 200, highscore, RGB(255,255,255), RGB(0,0,0), 1);
 
 }
 
@@ -356,22 +356,22 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
     l = p->y + 5;
   }
 
-  lcd.fillRect(u + 2, l + 3, 20, 20, RGB(11, 102, 41));
-  lcd.fillRect(p->x + 2, p->y + 3, 20, 20, p->color);
-  lcd.fillRect(p->x + 7, p->y + 8, 10, 10, RGB(0, 0, 204));
+  lcd.fillRect(u, l + 1, 23, 23, RGB(11, 102, 41));
+  lcd.fillCircle(p->x + 12, p->y + 12, 10, p->color);
+  lcd.fillCircle(p->x + 12, p->y + 12, 5, RGB(64, 75, 230));
 
   if (UpDown == 1) {
-    lcd.fillRect(p->x + 18, p->y + 5, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 18, p->y + 17, 4, 4, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 19, p->y + 7, 2, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 19, p->y + 18, 2, RGB(64, 75, 230));
   } else if (UpDown == 0) {
-    lcd.fillRect(p->x + 2, p->y + 5, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 2, p->y + 17, 4, 4, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 4, p->y + 7, 2, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 4, p->y + 18, 2, RGB(64, 75, 230));
   }else if (LeftRight == 1) {
-    lcd.fillRect(p->x + 4, p->y + 19, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 16, p->y + 19, 4, 4, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 6, p->y + 20, 2, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 17, p->y + 20, 2, RGB(64, 75, 230));
   } else if (LeftRight == 0) {
-    lcd.fillRect(p->x + 4, p->y + 3, 4, 4, RGB(64, 75, 230));
-    lcd.fillRect(p->x + 16, p->y + 3, 4, 4, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 6, p->y + 5, 2, RGB(64, 75, 230));
+    lcd.fillCircle(p->x + 17, p->y + 5, 2, RGB(64, 75, 230));
   }
 }
 
@@ -551,7 +551,8 @@ void turnBrightnessDown(int brightness){
 
 int main(void) {
   init();
-  TCCR2B |= (1 << CS02) | (1<<CS00);
+  TCCR2B |= (1 << CS22)|(1 << CS21)|(1 << CS20);
+  //TCCR2B |= (1 << CS02) | (1<<CS00);
   TIMSK2 |= (1<<TOIE0);
   TCNT2 = 0;
   sei();
@@ -605,10 +606,10 @@ int main(void) {
 
     if (inGame) {
       nunchuck_get_data();
+      lcd.drawText(256, 180, text, RGB(47,108,49), RGB(0,0,0), 1);
       updatePlayers();
       updateBombs();
       rendering = false;
-      lcd.drawText(256, 180, text, RGB(47,108,49), RGB(0,0,0), 1);
       _delay_ms(50);
     }
 
