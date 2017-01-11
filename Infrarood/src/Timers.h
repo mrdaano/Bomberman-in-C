@@ -20,7 +20,6 @@ typedef
 		uint8_t       rawlen;          // counter of entries in rawbuf
 		unsigned int  timer;           // State timer, counts 50uS ticks.
 		unsigned int  rawbuf[RAWBUF];  // raw data
-		uint8_t       overflow;        // Raw buffer overflow occurred
 	}irparams_t;
 
 // ISR State-Machine : Receiver States
@@ -49,14 +48,7 @@ EXTERN  volatile irparams_t  irparams;
 #	define sbi(sfr, bit)  (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
-//------------------------------------------------------------------------------
-// Pulse parms are ((X*50)-100) for the Mark and ((X*50)+100) for the Space.
-// First MARK is the one after the long gap
-// Pulse parameters in uSec
 //
-
-// Due to sensor lag, when received, Marks  tend to be 100us too long and
-//                                   Spaces tend to be 100us too short
 #define MARK_EXCESS    100
 
 // microseconds per clock interrupt tick
@@ -74,11 +66,7 @@ EXTERN  volatile irparams_t  irparams;
 #define TICKS_LOW(us)   ((int)(((us)*LTOL/USECPERTICK)))
 #define TICKS_HIGH(us)  ((int)(((us)*UTOL/USECPERTICK + 1)))
 
-//------------------------------------------------------------------------------
-// IR detector output is active low
-#define MARK   0
-#define SPACE  1
-
+// PWM PIN
 #define TIMER_PWM_PIN 3
 
 // timer

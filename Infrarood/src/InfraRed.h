@@ -8,18 +8,15 @@
 
 class decode_results {
 	public:
-		unsigned int          value;        // Decoded value [max 32-bits]
-		int                    bits;         // Number of bits in decoded value
-		volatile unsigned int  *rawbuf;      // Raw intervals in 50uS ticks
-		int                    rawlen;       // Number of records in rawbuf
-		int                    overflow;     // true iff IR raw code too long
+		unsigned int          value;
+		volatile unsigned int  *rawbuf;
+		int                    rawlen;
 };
 
 class SENDIR {
 public:
   SENDIR  ()  { }
   void  byteHead (unsigned int time);
-	void  byteSortHead(unsigned int time);
   void  byteHeadRest (unsigned int time);
   void  bitmarker (unsigned int time);
   void  one (unsigned int time);
@@ -40,7 +37,6 @@ private:
   bool receivingIR(decode_results *results);
 };
 
-int  MATCH       (int measured, int desired) ;
-int  MATCH_MARK  (int measured_ticks, int desired_us) ;
-int  MATCH_SPACE (int measured_ticks, int desired_us) ;
+int  MATCH_MARKER  (int measured_ticks, int desired_us) ;
+int  MATCH_BREAK (int measured_ticks, int desired_us) ;
 #endif

@@ -2,15 +2,8 @@
 #include "Timers.h"
 #include "stdbool.h"
 
-#define  BIT_AMOUNT 32
 #define  BYTE_HEADER 6500
 #define  BYTE_HEADER_REST 5500
-// #define  PLAYER_Y 2000
-// #define  PLAYER_X 1750
-// #define  BLOCK_Y 1500
-// #define  BLOCK_X 1250
-// #define  BOM_Y 1000
-// #define  BOM_X 750
 #define  BIT_MARKER 2000
 #define  BIT_ONE 3000
 #define  BIT_ZERO 1000
@@ -20,10 +13,8 @@ void SENDIR::sendingIR(unsigned int data, int bits) {
   enableIR1(38);
   byteHead(BYTE_HEADER);
   byteHeadRest(BYTE_HEADER_REST);
-  // byteSortHead(PLAYER_Y);
-  // byteHeadRest(BYTE_HEADER_REST);
 
-  unsigned long mask = 1UL;
+  unsigned long mask = 1UL; // 00000001
 
   for(int i = 0; i < bits; i++) {
     if (data & mask){
@@ -44,48 +35,36 @@ void SENDIR::sendingIR(unsigned int data, int bits) {
 bool RECEIVEIR::receivingIR(decode_results *results) {
   long data = 1;
   int offset = 1;
-  // Check header "mark"
-  if (!MATCH_MARK(results->rawbuf[offset], BYTE_HEADER)){
+  // Header?
+  if (!MATCH_MARKER(results->rawbuf[offset], BYTE_HEADER)){
     return false ;
   }else {
     offset++;
-    // Serial.println("hoi");
   }
-  // Check header "space"
-  if (!MATCH_SPACE(results->rawbuf[offset], BYTE_HEADER_REST)){
+  // Headerspace?
+  if (!MATCH_BREAK(results->rawbuf[offset], BYTE_HEADER_REST)){
     return false ;
   } else{
     offset++;
-    // Serial.println("hoi1");
   }
-  // Build the data
+  // Data
   for (int i = 0;  i < 8;  i++) {
-    // Check data "mark"
-    if (!MATCH_MARK(results->rawbuf[offset], BIT_MARKER)){
+    if (!MATCH_MARKER(results->rawbuf[offset], BIT_MARKER)){
       return false ;
     } else{
       offset++;
-      Serial.println("bit");
     }
-        // Suppend this bit
-    if      (MATCH_SPACE(results->rawbuf[offset], BIT_ONE )) {
+    if      (MATCH_BREAK(results->rawbuf[offset], BIT_ONE )) {
       data |= (data << 1) ;
       // data = (data << 1) | 1;
-      // digitalWrite(8, 1);
-      // Serial.println("one");
     }
-  else if (MATCH_SPACE(results->rawbuf[offset], BIT_ZERO)) {
+  else if (MATCH_BREAK(results->rawbuf[offset], BIT_ZERO)) {
     data &= ~(data << 1) ;
     // data = (data << 1) | 0;
-      // digitalWrite(8, 0);
-      // Serial.println("zero");
     }
     else                                                            return false ;
     offset++;
   }
-
-  // Success
-  results->bits        = BIT_AMOUNT;
   results->value       = data;
 
   return true;

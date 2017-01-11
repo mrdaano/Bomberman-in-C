@@ -8,8 +8,8 @@
 
 void SENDIR::enableIR1(int khz){
   TIMER_DISABLE_INTR;
-  pinMode(TIMER_PWM_PIN, OUTPUT);
-	digitalWrite(TIMER_PWM_PIN, LOW);
+  DDRD |= (1 << TIMER_PWM_PIN);
+  PORTD &= (1 << TIMER_PWM_PIN);
   TIMER_CONFIG_KHZ(khz);
 }
 
@@ -23,13 +23,6 @@ void SENDIR::byteHead(unsigned int time) {
 void SENDIR::byteHeadRest(unsigned int time){
   TIMER_DISABLE_PWM;
   if(time>0){
-    our_delay(time);
-  }
-}
-
-void SENDIR::byteSortHead(unsigned int time) {
-  TIMER_ENABLE_PWM;
-  if(time>0) {
     our_delay(time);
   }
 }
