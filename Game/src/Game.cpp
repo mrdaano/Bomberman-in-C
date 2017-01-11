@@ -60,9 +60,9 @@ ISR(TIMER2_OVF_vect) {
     teller = 0;
     if (inGame) {
       sec++;
-      text = sec;
+      text = sec; // Set the seconds of game is playing
       if ((player1.bomb->placed || player1.bomb->exploded) && player1.bomb->explodeIn != 0) {
-        player1.bomb->explodeIn--;
+        player1.bomb->explodeIn--; // Couting down the explosion of the bomb
       }
     }
   }
@@ -193,7 +193,7 @@ void initSettings() {
   lcd.drawText(15, 170, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
 }
 
-int temp [30][2];
+int temp [30][2]; // Array to store the choosen crates for a single game
 int possiblePositions[66][2] = {
   {1,3}, {1,4}, {1,5}, {1,6}, {1,7}, {1,8}, {1,9}, {1,10},
   {2,3}, {2,5}, {2,7}, {2,9},
@@ -204,7 +204,7 @@ int possiblePositions[66][2] = {
   {7,1}, {7,2}, {7,3}, {7,4}, {7,5}, {7,6}, {7,7}, {7,8}, {7,9}, {7,10},
   {8,1}, {8,3}, {8,5}, {8,7}, {8,9},
   {9,1}, {9,2}, {9,3}, {9,4}, {9,5}, {9,6}, {9,7}, {9,8}, {9,9}
-};
+}; // All possible positions for a crate
 
 void spawnCrates(int crate){
   // Spawn crates on random locations
@@ -220,13 +220,13 @@ void spawnCrates(int crate){
       }
     }
 
-    //Fill temp array
+    // Add a crate to the temp array
     if (isUnique) {
       temp[crate][0] = possiblePositions[r1][0];
       temp[crate][1] = possiblePositions[r1][1];
     }
 
-    // Draw crates
+    // Draw crate on screen
     lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
     lcd.fillRect(temp[crate][1] * 25 - 22, temp[crate][0] * 27 - 24, 19, 21, RGB(160,82,45));
     lcd.fillTriangle(temp[crate][1] * 25 - 19, temp[crate][0] * 27 - 23,
@@ -256,6 +256,7 @@ void updateScore(){
     lcd.fillCircle(275, 45, 4, RGB(47, 79, 79));
     lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
 
+    // If player has zero lifes the game reset and go to home screen
     inGame = false;
     highscore = sec;
     initMenu();
@@ -299,6 +300,7 @@ void initGame() {
   updateScore();
 }
 
+// Get the grid x position of a player or bomb
 int getPlayerXGrid(int x) {
   if (x >= 0 && x <= 25) {
     return 1;
@@ -323,6 +325,7 @@ int getPlayerXGrid(int x) {
   return 10;
 }
 
+// Get the grid y position of a player or bomb
 int getPlayerYGrid(int y) {
   if (y >= 0 && y <= 27) {
     return 1;
@@ -344,6 +347,7 @@ int getPlayerYGrid(int y) {
 }
 
 void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
+  // Set the new position of a player
   int u = p->x;
   if (UpDown == 1) {
     u = p->x - 5;
@@ -444,6 +448,7 @@ bool checkHitWall(PLAYER *p, int side) {
 }
 
 void placeBomb(PLAYER *p) {
+  // Place a bomb on the position of the player
   if (!p->bomb->placed) {
     p->bomb->placed = true;
     p->bomb->x = p->x;
@@ -475,7 +480,7 @@ void updateBombDamage(BOMB *b) {
     if ((crateX == (x+1) && crateY == y) || (crateX == (x-1) && crateY == y) || (crateX == x && crateY == (y + 1)) || (crateX == x && crateY == (y - 1))) {
       temp[i][0] = 0;
       temp[i][1] = 0;
-      lcd.fillRect(crateX * 25 - 25, crateY * 27 - 27, 25, 27, RGB(11, 102, 41));
+      lcd.fillRect(crateX * 25 - 25, crateY * 27 - 27, 25, 27, RGB(11, 102, 41)); // Remove the crate from screen
       return;
     }
   }
@@ -500,6 +505,7 @@ void updateBombs() {
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 3, RGB(215, 50, 37));
     updateBombDamage(player1.bomb);
   } else if (player1.bomb->exploded && player1.bomb->explodeIn == 0) {
+    // Remove explosion animation
     player1.bomb->exploded = false;
     lcd.fillRect(player1.bomb->x, player1.bomb->y, 22, 23, RGB(11, 102, 41));
   }
@@ -508,7 +514,7 @@ void updateBombs() {
 void updatePlayers() {
   int UpDown = 6, LeftRight = 6;
 
-  //Player movement
+  // Check the position of nuchuck
   bool moved = false;
   if (nData.x > 135 && player1.x+5 != 320) {
     player1.x = player1.x+5;
@@ -589,6 +595,7 @@ int main(void) {
     if (!inGame && lcd.touchRead() == 1) {
       int_least16_t touchX = lcd.touchX();
       int_least16_t touchY = lcd.touchY();
+      // Check if user is pressing on the screen
       if (!inSettings) {
         if (touchX > 40 && touchX < 280 && touchY > 100 && touchY < 120) {
           initGame();
@@ -599,12 +606,14 @@ int main(void) {
         }
       } else {
         if((touchX > 15 && touchX < 110 && touchY > 120 && touchY < 130)){
+          // Change the brightness
           if(brightness < 10){
             brightness += 2;
             turnBrightnessUp(brightness);
             _delay_ms(100);
           }
         } else if(touchX > 15 && touchX < 139 && touchY > 170 && touchY < 180){
+          // Change the brightness
           if(brightness > 1){
             brightness -= 2;
             turnBrightnessDown(brightness);
