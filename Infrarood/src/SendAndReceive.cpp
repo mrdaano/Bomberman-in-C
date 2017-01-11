@@ -3,16 +3,16 @@
 #include "stdbool.h"
 
 #define  BIT_AMOUNT 32
-#define  BYTE_HEADER 6000
-#define  BYTE_HEADER_REST 4500
+#define  BYTE_HEADER 6500
+#define  BYTE_HEADER_REST 5500
 // #define  PLAYER_Y 2000
 // #define  PLAYER_X 1750
 // #define  BLOCK_Y 1500
 // #define  BLOCK_X 1250
 // #define  BOM_Y 1000
 // #define  BOM_X 750
-#define  BIT_MARKER 3000
-#define  BIT_ONE 2000
+#define  BIT_MARKER 2000
+#define  BIT_ONE 3000
 #define  BIT_ZERO 1000
 
 #if SENDING_IR
@@ -49,14 +49,14 @@ bool RECEIVEIR::receivingIR(decode_results *results) {
     return false ;
   }else {
     offset++;
-    Serial.println("hoi");
+    // Serial.println("hoi");
   }
   // Check header "space"
   if (!MATCH_SPACE(results->rawbuf[offset], BYTE_HEADER_REST)){
     return false ;
   } else{
     offset++;
-    Serial.println("hoi1");
+    // Serial.println("hoi1");
   }
   // Build the data
   for (int i = 0;  i < 8;  i++) {
@@ -71,14 +71,14 @@ bool RECEIVEIR::receivingIR(decode_results *results) {
     if      (MATCH_SPACE(results->rawbuf[offset], BIT_ONE )) {
       data |= (data << 1) ;
       // data = (data << 1) | 1;
-      digitalWrite(8, 1);
-      Serial.println("one");
+      // digitalWrite(8, 1);
+      // Serial.println("one");
     }
   else if (MATCH_SPACE(results->rawbuf[offset], BIT_ZERO)) {
     data &= ~(data << 1) ;
     // data = (data << 1) | 0;
-      digitalWrite(8, 0);
-      Serial.println("zero");
+      // digitalWrite(8, 0);
+      // Serial.println("zero");
     }
     else                                                            return false ;
     offset++;

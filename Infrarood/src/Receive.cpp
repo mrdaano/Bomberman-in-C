@@ -47,7 +47,7 @@ int main(void) {
 
   decode_results results;
 
-  pinMode(8, OUTPUT);
+  // pinMode(8, OUTPUT);
 
 
   RECEIVEIR.enableIR0(); // Start the receiver

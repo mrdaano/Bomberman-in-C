@@ -57,7 +57,7 @@ EXTERN  volatile irparams_t  irparams;
 
 // Due to sensor lag, when received, Marks  tend to be 100us too long and
 //                                   Spaces tend to be 100us too short
-#define MARK_EXCESS    500
+#define MARK_EXCESS    100
 
 // microseconds per clock interrupt tick
 #define USECPERTICK    50
