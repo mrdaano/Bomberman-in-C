@@ -10,17 +10,17 @@
 #	define EXTERN extern
 #endif
 
-#define RAWBUF  101  // Maximum length of raw duration buffer
+#define RAWBUF
 
 typedef
 	struct {
-		// The fields are ordered to reduce memory over caused by struct-padding
-		uint8_t       rcvstate;        // State Machine state
-		uint8_t       IRpin;         // Pin connected to IR data from detector
-		uint8_t       rawlen;          // counter of entries in rawbuf
-		unsigned int  timer;           // State timer, counts 50uS ticks.
-		unsigned int  rawbuf[RAWBUF];  // raw data
+		uint8_t       rcvstate;
+		uint8_t       IRpin;
+		uint8_t       rawlen;
+		unsigned int  timer;
+		unsigned int  rawbuf[RAWBUF];
 	}irparams_t;
+EXTERN  volatile irparams_t  irparams;
 
 // ISR State-Machine : Receiver States
 #define STATE_IDLE      2
@@ -29,17 +29,10 @@ typedef
 #define STATE_STOP      5
 #define STATE_OVERFLOW  6
 
-// Allow all parts of the code access to the ISR data
-// NB. The data can be changed by the ISR at any time, even mid-function
-// Therefore we declare it as "volatile" to stop the compiler/CPU caching it
-EXTERN  volatile irparams_t  irparams;
-
 #	define SYSCLOCK  16000000  // main Arduino clock
 
 
-//------------------------------------------------------------------------------
-// Defines for setting and clearing register bits
-//
+// define and clearing
 #ifndef cbi
 #	define cbi(sfr, bit)  (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
@@ -48,7 +41,7 @@ EXTERN  volatile irparams_t  irparams;
 #	define sbi(sfr, bit)  (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
-//
+// marge of uSecs
 #define MARK_EXCESS    100
 
 // microseconds per clock interrupt tick

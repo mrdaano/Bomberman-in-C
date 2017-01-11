@@ -12,7 +12,6 @@ int main(void) {
 
   decode_results results;
 
-
   RECEIVEIR.enableIR0(); // Start the receiver
 
   for(;;) {

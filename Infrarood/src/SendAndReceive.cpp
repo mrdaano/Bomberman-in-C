@@ -24,7 +24,7 @@ void SENDIR::sendingIR(unsigned int data, int bits) {
       bitmarker(BIT_MARKER);
       zero(BIT_ZERO);
     }
-    mask <<= 1;
+    mask <<= 1; // 00000010 
   }
   bitmarker(BIT_MARKER);
   zero(0);
@@ -47,7 +47,7 @@ bool RECEIVEIR::receivingIR(decode_results *results) {
   } else{
     offset++;
   }
-  // Data
+  // Data?
   for (int i = 0;  i < 8;  i++) {
     if (!MATCH_MARKER(results->rawbuf[offset], BIT_MARKER)){
       return false ;
