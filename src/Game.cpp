@@ -84,8 +84,8 @@ ISR(TIMER2_OVF_vect) {
 //   return;
 // }
 //
-// Read the calibration data from EEPROM for the touch input
 
+// Read the calibration data from EEPROM for the touch input
 uint8_t readCalData(void)
 {
   uint16_t i, addr=0;
@@ -149,6 +149,7 @@ void placePlayers() {
   player1.lives = 3;
   player1.color = RGB(0, 0, 0);
 
+  //Allocate memory for bomb
   player1.bomb = (BOMB *) malloc(sizeof(BOMB));
   player1.bomb->placed = false;
 
@@ -219,6 +220,7 @@ void spawnCrates(int crate){
       }
     }
 
+    //Fill temp array
     if (isUnique) {
       temp[crate][0] = possiblePositions[r1][0];
       temp[crate][1] = possiblePositions[r1][1];
@@ -236,6 +238,7 @@ void spawnCrates(int crate){
   }
 
 void updateScore(){
+  //Draw lifes
   if(player1.lives == 3){
     lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
     lcd.fillCircle(275, 45, 4, RGB(204, 0, 0));
@@ -356,10 +359,12 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
     l = p->y + 5;
   }
 
+  //Draw player
   lcd.fillRect(u, l + 1, 23, 23, RGB(11, 102, 41));
   lcd.fillCircle(p->x + 12, p->y + 12, 10, p->color);
   lcd.fillCircle(p->x + 12, p->y + 12, 5, RGB(64, 75, 230));
 
+  //Draw player animation according to movement
   if (UpDown == 1) {
     lcd.fillCircle(p->x + 19, p->y + 7, 2, RGB(64, 75, 230));
     lcd.fillCircle(p->x + 19, p->y + 18, 2, RGB(64, 75, 230));
@@ -379,6 +384,7 @@ bool checkHitWall(PLAYER *p, int side) {
   if (((p->x + 20) == 245) && (side == 1)) {
     return true;
   }
+  //Wall coordinates
   int walls[20][2] = {
     {2,2}, {2,4}, {2,6}, {2,8}, {2,10},
     {4,2}, {4,4}, {4,6}, {4,8}, {4,10},
@@ -386,6 +392,7 @@ bool checkHitWall(PLAYER *p, int side) {
     {8,2}, {8,4}, {8,6}, {8,8}, {8,10}
   };
 
+  //Get player position
   int xGridB = 0, yGridB = 0;
   int xGridE = 0, yGridE = 0;
   if (side == 1) {
@@ -410,6 +417,7 @@ bool checkHitWall(PLAYER *p, int side) {
     yGridE = getPlayerYGrid(p->y);
   }
 
+  //Check if player is hitting a wall
   for (int i = 0; i < 20; i++) {
     int x = walls[i][1];
     int y = walls[i][0];
@@ -420,6 +428,7 @@ bool checkHitWall(PLAYER *p, int side) {
     }
 
   }
+  //Check if player is hitting a crate
   for (int i = 0; i < 30; i++) {
     int x = temp[i][1];
     int y = temp[i][0];
@@ -439,7 +448,7 @@ void placeBomb(PLAYER *p) {
     p->bomb->placed = true;
     p->bomb->x = p->x;
     p->bomb->y = p->y;
-    p->bomb->explodeIn = 4;
+    p->bomb->explodeIn = 2;
     p->bomb->exploded = false;
   }
 }
@@ -451,11 +460,13 @@ void updateBombDamage(BOMB *b) {
   int player1X = getPlayerXGrid(player1.x);
   int player1Y = getPlayerYGrid(player1.y);
 
+  //Check if player is nearby bomb
   if ((player1X == x && player1Y == y) || (player1X == (x+1) && player1Y == y) || (player1X == (x-1) && player1Y == y) || (player1X == x && player1Y == (y+1)) || (player1X == x && player1Y == (y-1))) {
     player1.lives--;
     updateScore();
   }
 
+  //Delete damagede crates
   for (int i = 0; i < 30; i++) {
     int crateY = temp[i][0];
     int crateX = temp[i][1];
@@ -481,7 +492,7 @@ void updateBombs() {
   } else if (player1.bomb->placed  && player1.bomb->explodeIn == 0) {
     player1.bomb->placed = false;
     player1.bomb->exploded = true;
-    player1.bomb->explodeIn = 3;
+    player1.bomb->explodeIn = 2;
     // Draw explosion animation
     lcd.fillRect(player1.bomb->x + 10, player1.bomb->y, 14, 14, RGB(15, 101, 15));
     lcd.fillCircle(player1.bomb->x + 13, player1.bomb->y + 14, 8, RGB(209, 199, 57));
@@ -497,6 +508,7 @@ void updateBombs() {
 void updatePlayers() {
   int UpDown = 6, LeftRight = 6;
 
+  //Player movement
   bool moved = false;
   if (nData.x > 135 && player1.x+5 != 320) {
     player1.x = player1.x+5;
@@ -540,6 +552,7 @@ void updatePlayers() {
   }
 }
 
+//Change brightness
 int brightness = 5;
 void turnBrightnessUp(int brightness){
     lcd.led(brightness * 10);
@@ -550,9 +563,9 @@ void turnBrightnessDown(int brightness){
 }
 
 int main(void) {
+  //Initialisation
   init();
   TCCR2B |= (1 << CS22)|(1 << CS21)|(1 << CS20);
-  //TCCR2B |= (1 << CS02) | (1<<CS00);
   TIMSK2 |= (1<<TOIE0);
   TCNT2 = 0;
   sei();
