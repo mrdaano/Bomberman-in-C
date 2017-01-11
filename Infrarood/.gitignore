@@ -1,0 +1,7 @@
+.pioenvs
+.clang_complete
+.gcc-flags.json
+.piolibdeps
+./build/compile_commands.json
+-fsyntax-only
+-c
