@@ -1,4 +1,4 @@
-#ifndef Timers_h
+ #ifndef Timers_h
 #define Timers_h
 
 #	include <arduino.h>
@@ -10,13 +10,15 @@
 #	define EXTERN extern
 #endif
 
-#define RAWBUF
+#define RAWBUF 101
 
 typedef
 	struct {
 		uint8_t       rcvstate;
 		uint8_t       IRpin;
 		uint8_t       rawlen;
+		uint8_t       overflow;        // Raw buffer overflow occurred
+		unsigned int 	value;
 		unsigned int  timer;
 		unsigned int  rawbuf[RAWBUF];
 	}irparams_t;
@@ -58,6 +60,15 @@ EXTERN  volatile irparams_t  irparams;
 
 #define TICKS_LOW(us)   ((int)(((us)*LTOL/USECPERTICK)))
 #define TICKS_HIGH(us)  ((int)(((us)*UTOL/USECPERTICK + 1)))
+
+#define Byte_Header				0
+#define Byte_Header_Rest	1
+#define Bit_Marker				0
+#define Bit_One						1
+#define Bit_Zero					1
+
+#define MARK   0
+#define SPACE  1
 
 // PWM PIN
 #define TIMER_PWM_PIN 3

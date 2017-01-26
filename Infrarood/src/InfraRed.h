@@ -1,4 +1,4 @@
-#ifndef IRemote_h
+ #ifndef IRemote_h
 #define IRemote_h
 
 #include "Timers.h"
@@ -8,7 +8,8 @@
 
 class decode_results {
 	public:
-		unsigned int          value;
+		int                    overflow;
+		unsigned int          	value;
 		volatile unsigned int  *rawbuf;
 		int                    rawlen;
 };
@@ -36,7 +37,7 @@ public:
 private:
   bool receivingIR(decode_results *results);
 };
-
+int  MATCH (int measured,  int desired)	;
 int  MATCH_MARKER  (int measured_ticks, int desired_us) ;
 int  MATCH_BREAK (int measured_ticks, int desired_us) ;
 #endif

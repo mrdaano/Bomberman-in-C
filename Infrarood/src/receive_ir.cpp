@@ -6,11 +6,13 @@ int  RECEIVEIR::checkData(decode_results *results)
 	results->rawbuf   = irparams.rawbuf;
 	results->rawlen   = irparams.rawlen;
 
+	results->overflow = irparams.overflow;
+
+	if (irparams.rcvstate != STATE_STOP)  return false ;
+
 	if (receivingIR(results)) {
-		goOn();
     return true;
   }
-
 	goOn();
 	return false;
 }
@@ -29,6 +31,7 @@ void RECEIVEIR::enableIR0(){
 	sei();  // enable interrupts
 
 	irparams.rawlen = 0;
+	irparams.rcvstate = STATE_IDLE;
 
 	// Set pin modes
 	DDRB &= ~(1 << irparams.IRpin);

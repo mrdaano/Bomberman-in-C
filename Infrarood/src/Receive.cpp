@@ -1,4 +1,4 @@
-#include <InfraRed.h>
+#include "InfraRed.h"
 #include <avr/interrupt.h>
 #include <stdint.h>
 
