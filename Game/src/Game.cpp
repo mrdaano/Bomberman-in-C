@@ -206,36 +206,43 @@ int possiblePositions[66][2] = {
   {9,1}, {9,2}, {9,3}, {9,4}, {9,5}, {9,6}, {9,7}, {9,8}, {9,9}
 }; // All possible positions for a crate
 
+void addCrate(int crate, int r1){
+  // Add a crate to the temp array
+    temp[crate][0] = possiblePositions[r1][0];
+    temp[crate][1] = possiblePositions[r1][1];
+
+  // Draw crate on screen
+  lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
+  lcd.fillRect(temp[crate][1] * 25 - 22, temp[crate][0] * 27 - 24, 19, 21, RGB(160,82,45));
+  lcd.fillTriangle(temp[crate][1] * 25 - 19, temp[crate][0] * 27 - 23,
+                   temp[crate][1] * 25 - 6, temp[crate][0] * 27 - 8,
+                   temp[crate][1] * 25 - 6, temp[crate][0] * 27 - 22, RGB(139,69,19));
+  lcd.fillTriangle(temp[crate][1] * 25 - 20, temp[crate][0] * 27 - 20,
+                   temp[crate][1] * 25 - 20, temp[crate][0] * 27 - 6,
+                   temp[crate][1] * 25 - 7, temp[crate][0] * 27 - 5, RGB(139,69,19));
+}
+
 void spawnCrates(int crate){
   // Spawn crates on random locations
   randomSeed(analogRead(0));
   // Generate random numbers
   int r1 = random(66);
-  bool isUnique = true;
+  bool notFound = true;
+  int times = 0;
   // Check if random numbers are unique
-    for (int i = 0; i < 66; i++) {
-      if (temp[i][0] == possiblePositions[r1][0] && temp[i][1] == possiblePositions[r1][1]) {
-        spawnCrates(crate);
-        isUnique = false;
-      }
+  while(notFound && times < 30){
+    if(r1 > 66){
+      r1 = 0;
     }
-
-    // Add a crate to the temp array
-    if (isUnique) {
-      temp[crate][0] = possiblePositions[r1][0];
-      temp[crate][1] = possiblePositions[r1][1];
+    if (temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]) {
+      r1++;
+      times++;
+    }else{
+      addCrate(crate, r1);
+      notFound = false;
     }
-
-    // Draw crate on screen
-    lcd.fillRect(temp[crate][1] * 25 - 25, temp[crate][0] * 27 - 27, 25, 27, RGB(139,69,19));
-    lcd.fillRect(temp[crate][1] * 25 - 22, temp[crate][0] * 27 - 24, 19, 21, RGB(160,82,45));
-    lcd.fillTriangle(temp[crate][1] * 25 - 19, temp[crate][0] * 27 - 23,
-                     temp[crate][1] * 25 - 6, temp[crate][0] * 27 - 8,
-                     temp[crate][1] * 25 - 6, temp[crate][0] * 27 - 22, RGB(139,69,19));
-    lcd.fillTriangle(temp[crate][1] * 25 - 20, temp[crate][0] * 27 - 20,
-                     temp[crate][1] * 25 - 20, temp[crate][0] * 27 - 6,
-                     temp[crate][1] * 25 - 7, temp[crate][0] * 27 - 5, RGB(139,69,19));
   }
+}
 
 void updateScore(){
   //Draw lifes
@@ -259,6 +266,8 @@ void updateScore(){
     // If player has zero lifes the game reset and go to home screen
     inGame = false;
     highscore = sec;
+    sec = 0;
+    text = "";
     initMenu();
   }
 }
@@ -292,6 +301,11 @@ void initGame() {
   String score = "Score:";
   lcd.drawText(256, 160, score, RGB(47,79,79), RGB(0,0,0), 1);
 
+  //Clear temp array
+  for (int j =0 ; j < 30; j++){
+    temp[j][0] = 0;
+    temp[j][1] = 0;
+  }
   // Spawn all the crates
   for (int i = 0; i < 30; i++) {
     spawnCrates(i);
