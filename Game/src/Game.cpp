@@ -1,58 +1,6 @@
-#include <avr/io.h>
-#include <Wire.h>
-#include <time.h>
-#include <stdlib.h>
-#include <SPI.h>
-#include <GraphicsLib.h>
-#include <MI0283QT9.h>
-#include <digitalWriteFast.h>
-#include <stdbool.h>
-#include <Arduino.h>
-#include <util/delay.h>
-#include <EEPROM.h>
-#include <avr/interrupt.h>
-#include <stdint.h>
-
-#define maxBlocksInLength 4
-#define maxBlocksInWidth 5
-#define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
-
-typedef struct {
-  int x;
-  int y;
-  int explodeIn;
-  bool placed;
-  bool exploded;
-} BOMB;
-
-typedef struct {
-  int x;
-  int y;
-  int lives;
-  uint16_t color;
-  BOMB *bomb;
-} PLAYER;
-
-typedef struct {
-  uint8_t x;
-  uint8_t y;
-  bool buttonZ;
-} NUNCHUCK_DATA;
-
-NUNCHUCK_DATA nData;
-
-MI0283QT9 lcd;
-PLAYER player1;
-
-String gameName = "Bomberman";
-bool inGame = false;
-bool inSettings = false;
-bool rendering = true;
-
-String text;
-String highscore = "0";
-uint16_t sec = 0;
-uint8_t teller = 0;
+#include "header.h"
+#include "Vars.cpp"
+#include "Calibration.cpp"
 
 ISR(TIMER2_OVF_vect) {
   teller++;
@@ -66,44 +14,6 @@ ISR(TIMER2_OVF_vect) {
       }
     }
   }
-}
-
-// void writeCalData(void)
-// {
-//   uint16_t i, addr=0;
-//   uint8_t *ptr;
-//
-//   EEPROM.write(addr++, 0xAA);
-//
-//   ptr = (uint8_t*)&lcd.tp_matrix;
-//   for(i=0; i < sizeof(CAL_MATRIX); i++)
-//   {
-//     EEPROM.write(addr++, *ptr++);
-//   }
-//
-//   return;
-// }
-//
-
-// Read the calibration data from EEPROM for the touch input
-uint8_t readCalData(void)
-{
-  uint16_t i, addr=0;
-  uint8_t *ptr;
-  uint8_t c;
-
-  c = EEPROM.read(addr++);
-  if(c == 0xAA) // Start byte for calibration data
-  {
-    ptr = (uint8_t*)&lcd.tp_matrix;
-    for(i=0; i < sizeof(CAL_MATRIX); i++) // Loop trough the calibration data in EEPROM and store it in the CAL_MATRIX of the GraphicsLib
-    {
-      *ptr++ = EEPROM.read(addr++);
-    }
-    return 0;
-  }
-
-  return 1;
 }
 
 void nunchuck_init() {
