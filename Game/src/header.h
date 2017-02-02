@@ -46,6 +46,16 @@ void writeCalData(void);
 void nunchuck_init();
 void nunchuck_get_data();
 
+void initMenu();
+void initSettings();
+
+void turnBrightnessUp(int brightness);
+void turnBrightnessDown(int brightness);
+
+void updateScore();
+
+extern int brightness;
+
 extern NUNCHUCK_DATA nData;
 
 extern MI0283QT9 lcd;

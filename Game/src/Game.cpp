@@ -45,41 +45,6 @@ void placePlayers() {
   lcd.fillCircle(player1.x + 12, player1.y + 12, 5, RGB(64, 75, 230));
 }
 
-void initMenu() {
-  // Remove every content on screen
-  lcd.fillScreen(RGB(0,0,0));
-  lcd.drawText(20, 20, gameName, RGB(255,255,255), RGB(0,0,0), 4);
-
-  String startText = "Start game";
-  lcd.drawText(40, 100, startText, RGB(255,255,255), RGB(30,130,76), 3);
-
-  String settingsTxt = "Settings";
-  lcd.drawText(40, 150, settingsTxt, RGB(255,255,255), RGB(34,167,240), 3);
-
-  String highScoreText = "Highscore:";
-  lcd.drawText(40, 200, highScoreText, RGB(255,255,255), RGB(0,0,0), 1);
-  lcd.drawText(120, 200, highscore, RGB(255,255,255), RGB(0,0,0), 1);
-
-}
-
-void initSettings() {
-  lcd.fillScreen(RGB(0,0,0));
-  String title = "Settings";
-  lcd.drawText(20, 20, title, RGB(255,255,255), RGB(0,0,0), 3);
-
-  String backText = "Terug";
-  lcd.drawText(230, 220, backText, RGB(255,255,255), RGB(0,0,0), 2);
-
-  String brightnessTitle = "Brightness:";
-  lcd.drawText(15, 80, brightnessTitle, RGB(255,255,255), RGB(0,0,0), 2);
-
-  String turnUpBrightness = "Turn up";
-  lcd.drawText(15, 120, turnUpBrightness, RGB(255,255,255), RGB(0,153,0), 2);
-
-  String turnDownBrightness = "Turn down";
-  lcd.drawText(15, 170, turnDownBrightness, RGB(255,255,255), RGB(153,0,0), 2);
-}
-
 int temp [30][2]; // Array to store the choosen crates for a single game
 int possiblePositions[66][2] = {
   {1,3}, {1,4}, {1,5}, {1,6}, {1,7}, {1,8}, {1,9}, {1,10},
@@ -128,35 +93,6 @@ void spawnCrates(int crate){
       addCrate(crate, r1);
       notFound = false;
     }
-  }
-}
-
-void updateScore(){
-  //Draw lifes
-  if(player1.lives == 3){
-    lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
-    lcd.fillCircle(275, 45, 4, RGB(204, 0, 0));
-    lcd.fillCircle(290, 45, 4, RGB(204, 0, 0));
-  } else if(player1.lives == 2){
-    lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
-    lcd.fillCircle(275, 45, 4, RGB(204, 0, 0));
-    lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
-  } else  if(player1.lives == 1){
-    lcd.fillCircle(260, 45, 4, RGB(204, 0, 0));
-    lcd.fillCircle(275, 45, 4, RGB(47, 79, 79));
-    lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
-  } else if(player1.lives == 0){
-    lcd.fillCircle(260, 45, 4, RGB(47, 79, 79));
-    lcd.fillCircle(275, 45, 4, RGB(47, 79, 79));
-    lcd.fillCircle(290, 45, 4, RGB(47, 79, 79));
-
-    // If player has zero lifes the game reset and go to home screen
-    inGame = false;
-    highscore = sec;
-    sec = 0;
-    text = "";
-    _delay_ms(100);
-    initMenu();
   }
 }
 
@@ -461,16 +397,6 @@ void updatePlayers() {
   if (nData.buttonZ && !rendering) {
     placeBomb(&player1);
   }
-}
-
-//Change brightness
-int brightness = 5;
-void turnBrightnessUp(int brightness){
-    lcd.led(brightness * 10);
-}
-
-void turnBrightnessDown(int brightness){
-    lcd.led(brightness * 10);
 }
 
 int main(void) {
