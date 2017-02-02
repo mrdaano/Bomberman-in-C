@@ -52,7 +52,7 @@ void initGame() {
   }
   // Spawn all the crates
 int i = 30;
-    spawnCrates(i);
+  spawnCrates(i);
   placePlayers();
   updateScore();
 }

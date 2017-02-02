@@ -12,6 +12,7 @@ int possiblePositions[66][2] = {
   {8,1}, {8,3}, {8,5}, {8,7}, {8,9},
   {9,1}, {9,2}, {9,3}, {9,4}, {9,5}, {9,6}, {9,7}, {9,8}, {9,9}
 }; // All possible positions for a crate
+int prev[30];
 
 void addCrate(int crate, int r1){
   // Add a crate to the temp array
@@ -34,40 +35,51 @@ void spawnCrates(int crate){
   randomSeed(analogRead(0));
   // Generate random numbers
 
-  bool notFound = true;
+  for(int i = 0; i < crate; i++) {
+    int r = random(66);
+    for(int arr = 0; arr < 30; arr++) {
+      if (r == prev[arr]) {
+        r = random(66);
+        arr = 0;
+      }
+    }
+
+    prev[i] = r;
+    addCrate(i, r);
+  }
+
+  // bool notFound = true;
+  // bool prev = false;
   // for(int times = 0; times < crate; times++){
-  //   int r1 = random(66);
   //   while(notFound){
-  //     if(r1 >= 67){
-  //       r1 = 0;
+  //     int r1 = random(66);
+  //     while(prev){}
+  //     for(int i = 0; i < 30; i++){
+  //       if(r1 == prev[i]){
+  //         notFound = true;
+  //     } else {
+  //         prev[crate] = r1;
+  //         addCrate(times, r1);
+  //         notFound = false;
+  //       }
   //     }
-  //     if(temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]){
-  //       r1++;
-  //       notFound = true;
-  //     } else{
-  //       addCrate(times, r1);
-  //       notFound = false;
-  //     }
-  //   }
   //   notFound = true;
-  // }
+  // }}
 
   // Check if random numbers are unique
 
-
-
-    for(int times = 0; times < 30; times++){
-  int  r1 = random(66);
-      while(notFound){
-      if(r1 >= 67){
-        r1 = 0;
-      }
-      if (temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]) {
-        r1++;
-      }else{
-        addCrate(crate, r1);
-        notFound = false;
-      }
-    }
-  }
+  //   for(int times = 0; times < 30; times++){
+  // int  r1 = random(66);
+  //     while(notFound){
+  //     if(r1 >= 67){
+  //       r1 = 0;
+  //     }
+  //     if (temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]) {
+  //       r1++;
+  //     }else{
+  //       addCrate(crate, r1);
+  //       notFound = false;
+  //     }
+  //   }
+  // }
 }
