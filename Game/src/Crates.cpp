@@ -34,7 +34,6 @@ void spawnCrates(int crate){
   // Spawn crates on random locations
   randomSeed(analogRead(0));
   // Generate random numbers
-
   for(int i = 0; i < crate; i++) {
     int r = random(66);
     for(int arr = 0; arr < 30; arr++) {
@@ -47,39 +46,4 @@ void spawnCrates(int crate){
     prev[i] = r;
     addCrate(i, r);
   }
-
-  // bool notFound = true;
-  // bool prev = false;
-  // for(int times = 0; times < crate; times++){
-  //   while(notFound){
-  //     int r1 = random(66);
-  //     while(prev){}
-  //     for(int i = 0; i < 30; i++){
-  //       if(r1 == prev[i]){
-  //         notFound = true;
-  //     } else {
-  //         prev[crate] = r1;
-  //         addCrate(times, r1);
-  //         notFound = false;
-  //       }
-  //     }
-  //   notFound = true;
-  // }}
-
-  // Check if random numbers are unique
-
-  //   for(int times = 0; times < 30; times++){
-  // int  r1 = random(66);
-  //     while(notFound){
-  //     if(r1 >= 67){
-  //       r1 = 0;
-  //     }
-  //     if (temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]) {
-  //       r1++;
-  //     }else{
-  //       addCrate(crate, r1);
-  //       notFound = false;
-  //     }
-  //   }
-  // }
 }
