@@ -28,20 +28,17 @@ ISR (TIMER2_COMPA_vect)
 {
 	TIMER_RESET;
 
-	// Read if IR Receiver -> SPACE [LED off] or a MARK [LED on]
-	char irdata =
-  // PIND & (1<<PIND4);
-  digitalRead(irparams.IRpin);
-  // Serial.println(irdata);
-	irparams.timer++;  // One more 50uS tick // Buffer overflow
+	char irdata = PIND & (1<<PIND6);
+
+  irparams.timer++;  // One more 50uS tick
   if (irparams.rawlen >= RAWBUF){
       irparams.rcvstate = STATE_OVERFLOW ;
   }
-  //
+
 	switch(irparams.rcvstate) {
 		//......................................................................
 		case STATE_IDLE: // In the middle of a gap
-			if (irdata == 1) {
+			if (irdata != 0) {
 				if (irparams.timer < GAP_TICKS)  {  // Not big enough to be a gap.
 					irparams.timer = 0;
 
@@ -57,7 +54,7 @@ ISR (TIMER2_COMPA_vect)
 			break;
 		//......................................................................
 		case STATE_MARK:  // Timing Mark
-			if (irdata == 0) {
+			if (irdata == 0) {   // Mark ended; Record time
 				irparams.rawbuf[irparams.rawlen++] = irparams.timer;
 				irparams.timer                     = 0;
 				irparams.rcvstate                  = STATE_SPACE;
@@ -65,7 +62,7 @@ ISR (TIMER2_COMPA_vect)
 			break;
 		//......................................................................
 		case STATE_SPACE:  // Timing Space
-			if (irdata == 1) {
+			if (irdata != 0) {  // Space just ended; Record time
 				irparams.rawbuf[irparams.rawlen++] = irparams.timer;
 				irparams.timer                     = 0;
 				irparams.rcvstate                  = STATE_MARK;
@@ -76,7 +73,7 @@ ISR (TIMER2_COMPA_vect)
 			break;
 		//......................................................................
 		case STATE_STOP:  // Waiting; Measuring Gap
-		 	if (irdata == 1)  irparams.timer = 0 ;  // Reset gap timer
+		 	if (irdata != 0)  irparams.timer = 0 ;  // Reset gap timer
 		 	break;
 		//......................................................................
 

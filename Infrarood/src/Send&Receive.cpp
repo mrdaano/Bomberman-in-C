@@ -2,10 +2,6 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 
-#ifndef rec
-#define rec 6
-#endif
-
 SENDIR SENDIR;
 RECEIVEIR RECEIVEIR(rec);
 decode_results results;

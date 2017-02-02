@@ -63,9 +63,6 @@ EXTERN  volatile irparams_t  irparams;
 #define TICKS_LOW(us)   ((int)(((us)*LTOL/USECPERTICK)))
 #define TICKS_HIGH(us)  ((int)(((us)*UTOL/USECPERTICK + 1)))
 
-#define MARK   0
-#define SPACE  1
-
 // PWM PIN
 #define TIMER_PWM_PIN 3
 

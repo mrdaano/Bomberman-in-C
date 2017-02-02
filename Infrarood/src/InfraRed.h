@@ -9,6 +9,8 @@
 #define SEND            1
 #define RECEIVE         0
 
+#define rec             6
+
 class decode_results {
 	public:
 		int                    overflow;
@@ -40,7 +42,9 @@ public:
 private:
   bool receivingIR(decode_results *results);
 };
+
 int  MATCH (int measured,  int desired)	;
 int  MATCH_MARKER  (int measured_ticks, int desired_us) ;
 int  MATCH_BREAK (int measured_ticks, int desired_us) ;
+
 #endif
