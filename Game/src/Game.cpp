@@ -155,6 +155,7 @@ void updateScore(){
     highscore = sec;
     sec = 0;
     text = "";
+    _delay_ms(100);
     initMenu();
   }
 }
@@ -408,8 +409,11 @@ void updateBombs() {
   } else if (player1.bomb->exploded && player1.bomb->explodeIn == 0) {
     // Remove explosion animation
     player1.bomb->exploded = false;
-    lcd.fillRect(player1.bomb->x, player1.bomb->y, 22, 23, RGB(11, 102, 41));
-  }
+    if(player1.lives != 0){
+      lcd.fillRect(player1.bomb->x, player1.bomb->y, 22, 23, RGB(11, 102, 41));
+    } else
+      lcd.fillRect(player1.bomb->x, player1.bomb->y, 22, 23, RGB(0, 0, 0));
+    }
 }
 
 void updatePlayers() {
