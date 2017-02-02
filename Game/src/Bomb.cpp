@@ -33,7 +33,9 @@ void updateBombDamage(BOMB *b) {
     if ((crateX == (x+1) && crateY == y) || (crateX == (x-1) && crateY == y) || (crateX == x && crateY == (y + 1)) || (crateX == x && crateY == (y - 1))) {
       temp[i][0] = 0;
       temp[i][1] = 0;
-      lcd.fillRect(crateX * 25 - 25, crateY * 27 - 27, 25, 27, RGB(11, 102, 41)); // Remove the crate from screen
+      if(player1.lives != 0){
+        lcd.fillRect(crateX * 25 - 25, crateY * 27 - 27, 25, 27, RGB(11, 102, 41)); // Remove the crate from screen
+      }
       return;
     }
   }

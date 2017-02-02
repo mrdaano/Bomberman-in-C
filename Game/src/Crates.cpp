@@ -33,20 +33,41 @@ void spawnCrates(int crate){
   // Spawn crates on random locations
   randomSeed(analogRead(0));
   // Generate random numbers
-  int r1 = random(66);
+
   bool notFound = true;
-  int times = 0;
+  // for(int times = 0; times < crate; times++){
+  //   int r1 = random(66);
+  //   while(notFound){
+  //     if(r1 >= 67){
+  //       r1 = 0;
+  //     }
+  //     if(temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]){
+  //       r1++;
+  //       notFound = true;
+  //     } else{
+  //       addCrate(times, r1);
+  //       notFound = false;
+  //     }
+  //   }
+  //   notFound = true;
+  // }
+
   // Check if random numbers are unique
-  while(notFound && times < 30){
-    if(r1 > 66){
-      r1 = 0;
-    }
-    if (temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]) {
-      r1++;
-      times++;
-    }else{
-      addCrate(crate, r1);
-      notFound = false;
+
+
+
+    for(int times = 0; times < 30; times++){
+  int  r1 = random(66);
+      while(notFound){
+      if(r1 >= 67){
+        r1 = 0;
+      }
+      if (temp[times][0] == possiblePositions[r1][0] && temp[times][1] == possiblePositions[r1][1]) {
+        r1++;
+      }else{
+        addCrate(crate, r1);
+        notFound = false;
+      }
     }
   }
 }

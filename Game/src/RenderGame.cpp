@@ -51,9 +51,8 @@ void initGame() {
     temp[j][1] = 0;
   }
   // Spawn all the crates
-  for (int i = 0; i < 30; i++) {
+int i = 30;
     spawnCrates(i);
-  }
   placePlayers();
   updateScore();
 }

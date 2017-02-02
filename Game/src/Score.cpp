@@ -24,7 +24,6 @@ void updateScore(){
     highscore = sec;
     sec = 0;
     text = "";
-    _delay_ms(100);
     initMenu();
   }
 }

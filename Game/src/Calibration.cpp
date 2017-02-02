@@ -14,7 +14,7 @@
 //
 //   return;
 // }
-//
+
 
 // Read the calibration data from EEPROM for the touch input
 uint8_t readCalData(void)
