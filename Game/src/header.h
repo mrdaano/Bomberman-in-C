@@ -1,4 +1,5 @@
-#ifndef HEADER
+#ifndef H_HEADER
+#define H_HEADER
 #include <avr/io.h>
 #include <Wire.h>
 #include <time.h>
@@ -17,8 +18,6 @@
 #define maxBlocksInLength 4
 #define maxBlocksInWidth 5
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
-
-#define HEADER
 
 typedef struct {
   int x;
@@ -41,4 +40,24 @@ typedef struct {
   uint8_t y;
   bool buttonZ;
 } NUNCHUCK_DATA;
+
+uint8_t readCalData(void);
+void writeCalData(void);
+void nunchuck_init();
+void nunchuck_get_data();
+
+extern NUNCHUCK_DATA nData;
+
+extern MI0283QT9 lcd;
+extern PLAYER player1;
+
+extern String gameName;
+extern bool inGame;
+extern bool inSettings;
+extern bool rendering;
+
+extern String text;
+extern String highscore;
+extern uint16_t sec;
+extern uint8_t teller;
 #endif

@@ -1,6 +1,19 @@
 #include "header.h"
-#include "Vars.cpp"
-#include "Calibration.cpp"
+
+NUNCHUCK_DATA nData;
+
+MI0283QT9 lcd;
+PLAYER player1;
+
+String gameName = "Bomberman";
+bool inGame = false;
+bool inSettings = false;
+bool rendering = true;
+
+String text;
+String highscore = "0";
+uint16_t sec = 0;
+uint8_t teller = 0;
 
 ISR(TIMER2_OVF_vect) {
   teller++;
@@ -14,42 +27,6 @@ ISR(TIMER2_OVF_vect) {
       }
     }
   }
-}
-
-void nunchuck_init() {
-  Wire.begin();
-  Wire.beginTransmission(0x52);       // device address
-  Wire.write(0xF0);
-  Wire.write(0x55);
-  Wire.endTransmission();
-  _delay_ms(1);
-  Wire.beginTransmission(0x52);
-  Wire.write(0xFB);
-  Wire.write(0x00);
-  Wire.endTransmission();
-}
-
-
-void nunchuck_get_data() {
-  uint8_t cnt;
-  uint8_t status[6];
-  cnt = 0;
-  Wire.requestFrom (0x52, 6); // request data from nunchuck
-  while (Wire.available ()) {
-      // receive byte as an integer
-      status[cnt] =  Wire.read();
-      cnt++;
-  }
-  if (cnt > 5) {
-    nData.x = (status[0]);
-    nData.y = (status[1]);
-    nData.buttonZ = !(status[5] & B00000001);
-  }
-
-  // Send one byte of 00000000 to request next bytes
-  Wire.beginTransmission(0x52);      // transmit to device 0x52
-  Wire.write(0x00);           // sends one byte
-  Wire.endTransmission();    // stop transmitting
 }
 
 void placePlayers() {
