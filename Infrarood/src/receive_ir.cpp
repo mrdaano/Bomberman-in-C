@@ -22,7 +22,7 @@ RECEIVEIR::RECEIVEIR (int IRpin){
 	irparams.IRpin = IRpin;
 }
 
-// Aanzetten van infrarood led
+// Aanzetten van infrarood sensor
 void RECEIVEIR::enableIR0(){
 	cli(); // disable interrupts
 	TIMER_CONFIG_NORMAL();
@@ -30,11 +30,11 @@ void RECEIVEIR::enableIR0(){
 	TIMER_RESET;
 	sei();  // enable interrupts
 
-	irparams.rawlen = 0;
 	irparams.rcvstate = STATE_IDLE;
+	irparams.rawlen = 0;
 
 	// Set pin modes
-	DDRB &= ~(1 << irparams.IRpin);
+	DDRD &= ~(1 << 4);
 }
 
 // legen voor de volgende infrarood stroom

@@ -9,7 +9,7 @@
 class decode_results {
 	public:
 		int                    overflow;
-		unsigned int          	value;
+		unsigned int           value;
 		volatile unsigned int  *rawbuf;
 		int                    rawlen;
 };

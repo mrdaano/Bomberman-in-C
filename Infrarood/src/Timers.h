@@ -2,7 +2,7 @@
 #define Timers_h
 
 #	include <arduino.h>
-#include "stdint.h"
+# include "stdint.h"
 
 #ifdef IR_GLOBAL
 #	define EXTERN
@@ -22,7 +22,7 @@ typedef
 		unsigned int  timer;
 		unsigned int  rawbuf[RAWBUF];
 	}irparams_t;
-EXTERN  volatile irparams_t  irparams;
+
 
 // ISR State-Machine : Receiver States
 #define STATE_IDLE      2
@@ -30,6 +30,8 @@ EXTERN  volatile irparams_t  irparams;
 #define STATE_SPACE     4
 #define STATE_STOP      5
 #define STATE_OVERFLOW  6
+
+EXTERN  volatile irparams_t  irparams;
 
 #	define SYSCLOCK  16000000  // main Arduino clock
 
@@ -55,17 +57,11 @@ EXTERN  volatile irparams_t  irparams;
 #define UTOL            (1.0 + (TOLERANCE/100.))
 
 // Minimum gap between IR transmissions
-#define _GAP            4000
+#define _GAP            5000
 #define GAP_TICKS       (_GAP/USECPERTICK)
 
 #define TICKS_LOW(us)   ((int)(((us)*LTOL/USECPERTICK)))
 #define TICKS_HIGH(us)  ((int)(((us)*UTOL/USECPERTICK + 1)))
-
-#define Byte_Header				0
-#define Byte_Header_Rest	1
-#define Bit_Marker				0
-#define Bit_One						1
-#define Bit_Zero					1
 
 #define MARK   0
 #define SPACE  1

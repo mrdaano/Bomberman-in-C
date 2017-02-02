@@ -9,7 +9,7 @@
 void SENDIR::enableIR1(int khz){
   TIMER_DISABLE_INTR;
   DDRD |= (1 << TIMER_PWM_PIN);
-  PORTD &= (1 << TIMER_PWM_PIN);
+  PORTD &= ~(1 << TIMER_PWM_PIN);
   TIMER_CONFIG_KHZ(khz);
 }
 

@@ -2,11 +2,11 @@
 #include "Timers.h"
 #include "stdbool.h"
 
-#define  BYTE_HEADER 6500
-#define  BYTE_HEADER_REST 5500
-#define  BIT_MARKER 2000
-#define  BIT_ONE 3000
-#define  BIT_ZERO 1000
+#define  BYTE_HEADER 9000
+#define  BYTE_HEADER_REST 4500
+#define  BIT_MARKER 560
+#define  BIT_ONE 1690
+#define  BIT_ZERO 560
 
 #if SENDING_IR
 void SENDIR::sendingIR(unsigned int data, int bits) {
@@ -24,7 +24,7 @@ void SENDIR::sendingIR(unsigned int data, int bits) {
       bitmarker(BIT_MARKER);
       zero(BIT_ZERO);
     }
-    mask <<= 1; // 00000010 
+    mask <<= 1; // 00000010
   }
   bitmarker(BIT_MARKER);
   zero(0);
@@ -33,37 +33,32 @@ void SENDIR::sendingIR(unsigned int data, int bits) {
 
 #if RECEIVING_IR
 bool RECEIVEIR::receivingIR(decode_results *results) {
-  long data = 1;
-  int offset = 1;
+  long data = 0;
+  int datanr = 0;
   // Header?
-  if (!MATCH_MARKER(results->rawbuf[offset], BYTE_HEADER)){
+  if (!MATCH_MARKER(results->rawbuf[datanr], BYTE_HEADER)){
     return false ;
-  }else {
-    offset++;
   }
+    datanr++;
   // Headerspace?
-  if (!MATCH_BREAK(results->rawbuf[offset], BYTE_HEADER_REST)){
+  if (!MATCH_BREAK(results->rawbuf[datanr], BYTE_HEADER_REST)){
     return false ;
-  } else{
-    offset++;
   }
+    datanr++;
   // Data?
   for (int i = 0;  i < 8;  i++) {
-    if (!MATCH_MARKER(results->rawbuf[offset], BIT_MARKER)){
+    if (!MATCH_MARKER(results->rawbuf[datanr], BIT_MARKER)){
       return false ;
-    } else{
-      offset++;
     }
-    if      (MATCH_BREAK(results->rawbuf[offset], BIT_ONE )) {
-      data |= (data << 1) ;
-      // data = (data << 1) | 1;
+      datanr++;
+    if      (MATCH_BREAK(results->rawbuf[datanr], BIT_ONE)) {
+      data = (data << 1) | 1;
     }
-  else if (MATCH_BREAK(results->rawbuf[offset], BIT_ZERO)) {
-    data &= ~(data << 1) ;
-    // data = (data << 1) | 0;
+  else if (MATCH_BREAK(results->rawbuf[datanr], BIT_ZERO)) {
+    data = (data << 1) | 0;
     }
     else                                                            return false ;
-    offset++;
+    datanr++;
   }
   results->value       = data;
 
