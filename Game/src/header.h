@@ -61,6 +61,17 @@ void updateBombs();
 int getPlayerXGrid(int x);
 int getPlayerYGrid(int y);
 
+void addCrate(int crate, int r1);
+void spawnCrates(int crate);
+
+void placePlayers();
+void initGame();
+
+bool checkHitWall(PLAYER *p, int side);
+
+void movePlayer(PLAYER *p, int UpDown, int LeftRight);
+void updatePlayers();
+
 extern int brightness;
 
 extern int temp [30][2]; // Array to store the choosen crates for a single game
