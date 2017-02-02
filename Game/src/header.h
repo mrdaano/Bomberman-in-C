@@ -54,7 +54,17 @@ void turnBrightnessDown(int brightness);
 
 void updateScore();
 
+void placeBomb(PLAYER *p);
+void updateBombDamage(BOMB *b);
+void updateBombs();
+
+int getPlayerXGrid(int x);
+int getPlayerYGrid(int y);
+
 extern int brightness;
+
+extern int temp [30][2]; // Array to store the choosen crates for a single game
+extern int possiblePositions[66][2];
 
 extern NUNCHUCK_DATA nData;
 
