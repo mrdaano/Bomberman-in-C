@@ -6,7 +6,7 @@
 #define SENDING_IR      1
 #define RECEIVING_IR    1
 
-#define SEND            1
+#define SEND            0
 #define RECEIVE         0
 
 #define rec             6
