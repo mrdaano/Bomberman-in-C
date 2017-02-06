@@ -406,7 +406,7 @@ void GraphicsLib::fillRoundRect(int_least16_t x0, int_least16_t y0, int_least16_
 void GraphicsLib::drawCircle(int_least16_t x0, int_least16_t y0, int_least16_t radius, uint_least16_t color)
 {
   int_least16_t err, x, y;
-  
+
   err = -radius;
   x   = radius;
   y   = 0;
@@ -438,7 +438,7 @@ void GraphicsLib::drawCircle(int_least16_t x0, int_least16_t y0, int_least16_t r
 void GraphicsLib::fillCircle(int_least16_t x0, int_least16_t y0, int_least16_t radius, uint_least16_t color)
 {
   int_least16_t err, x, y;
-  
+
   err = -radius;
   x   = radius;
   y   = 0;
@@ -669,7 +669,7 @@ int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, const char
 
 int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, String &s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
-  for(uint_least16_t i=0; i < s.length(); i++) 
+  for(uint_least16_t i=0; i < s.length(); i++)
   {
     x = drawChar(x, y, (char)s[i], color, bg, size);
     if(x > lcd_width)
@@ -958,7 +958,7 @@ int_least16_t GraphicsLib::touchX(void)
 int_least16_t GraphicsLib::touchY(void)
 {
   touchCal();
-  
+
        if(lcd_orientation ==   0){ return lcd_y; }
   else if(lcd_orientation ==  90){ return lcd_height-lcd_x; }
   else if(lcd_orientation == 180){ return lcd_height-lcd_y; }

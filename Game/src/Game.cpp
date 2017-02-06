@@ -15,7 +15,7 @@ String highscore = "0";
 uint16_t sec = 0;
 uint8_t teller = 0;
 
-ISR(TIMER2_OVF_vect) {
+ISR(TIMER0_OVF_vect) {
   teller++;
   if ( teller >= 30 ) {
     teller = 0;
@@ -31,11 +31,24 @@ ISR(TIMER2_OVF_vect) {
 
 int main(void) {
   //Initialisation
-  init();
-  TCCR2B |= (1 << CS22)|(1 << CS21)|(1 << CS20);
-  TIMSK2 |= (1<<TOIE0);
-  TCNT2 = 0;
+  // TCCR0A |= (1 << WGM01);
+  // TCCR0A |= (1 << WGM00);
+  // TCCR0B |= (1 << CS02)|(1 << CS01)|(1 << CS00);
+  // TIMSK0 |= (1<<TOIE0);
+  // TCNT0 = 0;
+  TCCR0A |= (1 << WGM01)|(1 << WGM00)|(1 << COM0A0);
+  TCCR0B |= (1 << WGM02) | (1 << CS02) | (1 << CS00);
+  OCR0A = 255;
+  TCCR1B = 0;
+  TCCR1A |= (1 << WGM10);
+  TCCR1B |= (1 << CS11) | (1 << CS10);
+  TCCR2A |= (1 << WGM20) | (1 << WGM10);
+  TCCR2B |= (1 << CS22) | (1 << CS11) | (1 << CS10);
+  ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+  ADCSRA |= (1 << ADEN);
+  UCSR0B = 0;
   sei();
+
   lcd.begin(4);
   nunchuck_init();
   Serial.begin(9600);
@@ -50,7 +63,9 @@ int main(void) {
   //   writeCalData(); //write data to EEPROM
   // }
 
-  initMenu();
+  //initMenu();
+  initGame();
+  inGame = true;
   for (;;) {
     // If player is not in game and user touched the screen
     if (!inGame && lcd.touchRead() == 1) {
