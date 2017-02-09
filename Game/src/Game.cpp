@@ -33,30 +33,35 @@ ISR(TIMER0_OVF_vect) {
   }
 }
 
-ISR(PCINT2_vect) {
-  RECEIVEIR.checkData(&results);
-  Serial.println(results.value, DEC);
+ISR(PCINT2_vect){
+	RECEIVEIR.checkData(&results);
+	Serial.println(results.value, DEC);
 }
 
-int main(void) {
+void pins() {
   //Initialisation
+  sei();
+
   TCCR0A |= (1 << WGM01)|(1 << WGM00)|(1 << COM0A0);
   TCCR0B |= (1 << WGM02) | (1 << CS02) | (1 << CS00);
   OCR0A = 255;
-  TCCR1B = 0;
+
   TCCR1A |= (1 << WGM10);
   TCCR1B |= (1 << CS11) | (1 << CS10);
+
   PCICR |= (1 << PCIE2);
   PCMSK2 |= (1 << PCINT20);
-  ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
-  ADCSRA |= (1 << ADEN);
-  UCSR0B = 0;
-  sei();
+}
+
+int main(void) {
+  Serial.begin(9600);
 
   RECEIVEIR.enableIR0();
+
+  pins();
+
   lcd.begin(4);
   nunchuck_init();
-  Serial.begin(9600);
 
   // calibration for touchpanel
   readCalData();
@@ -115,7 +120,6 @@ int main(void) {
       rendering = false;
       _delay_ms(50);
     }
-
   }
   return 0;
 }

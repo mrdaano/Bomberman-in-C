@@ -74,20 +74,20 @@ EXTERN  volatile irparams_t  irparams;
 #define TIMER_DISABLE_INTR  (TIMSK2 = 0)
 
 #define TIMER_CONFIG_KHZ(val) ({ \
-	const uint8_t pwmval = SYSCLOCK / 2000 / (val); \
-	TCCR2A               |= (1 << WGM20); \
-	TCCR2B               |= (1 << WGM22) | (1 << CS20); \
-	OCR2A                = pwmval; \
-	OCR2B                = pwmval / 3; \
+ const uint8_t pwmval = SYSCLOCK / 2000 / (val); \
+ TCCR2A               |= (1 << WGM20); \
+ TCCR2B               |= (1 << WGM22) | (1 << CS20); \
+ OCR2A                = pwmval; \
+ OCR2B                = pwmval / 3; \
 })
 
 #define TIMER_COUNT_TOP  (SYSCLOCK * USECPERTICK / 1000000)
 
 //-----------------
 #	define TIMER_CONFIG_NORMAL() ({ \
-		TCCR2A |= (1 << WGM21); \
-		TCCR2B |= (1 << CS21); \
-		OCR2A  = TIMER_COUNT_TOP / 8; \
-		TCNT2  = 0; \
-	})
+   TCCR2A |= (1 << WGM21); \
+   TCCR2B |= (1 << CS21); \
+   OCR2A  = TIMER_COUNT_TOP / 8; \
+   TCNT2  = 0; \
+ })
 #endif

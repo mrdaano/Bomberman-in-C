@@ -4,24 +4,16 @@ void movePlayer(PLAYER *p, int UpDown, int LeftRight) {
   int u = p->x;
   if (UpDown == 1) {
     u = p->x - 5;
-    Serial.print("x=");
-    Serial.println(u);
   } else if (UpDown == 0) {
     u = p->x + 5;
-    Serial.print("x=");
-    Serial.println(u);
   }
 
   int l = p->y;
 
   if (LeftRight == 1) {
     l = p->y - 5;
-    Serial.print("y=");
-    Serial.println(l);
   } else if (LeftRight == 0) {
     l = p->y + 5;
-    Serial.print("y=");
-    Serial.println(l);
   }
 
   //Draw player
