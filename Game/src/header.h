@@ -1,5 +1,6 @@
 #ifndef H_HEADER
 #define H_HEADER
+#include "InfraRed.h"
 #include <avr/io.h>
 #include <Wire.h>
 #include <time.h>

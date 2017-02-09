@@ -28,7 +28,7 @@ ISR (TIMER2_COMPA_vect)
 {
 	TIMER_RESET;
 
-	char irdata = PIND & (1<<PIND6);
+	char irdata = PIND & (1<<PIND4);
 
   irparams.timer++;  // One more 50uS tick
   if (irparams.rawlen >= RAWBUF){

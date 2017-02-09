@@ -9,7 +9,7 @@
 #define SEND            0
 #define RECEIVE         0
 
-#define rec             6
+#define rec             4
 
 class decode_results {
 	public:

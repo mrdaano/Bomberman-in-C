@@ -5,6 +5,10 @@ NUNCHUCK_DATA nData;
 MI0283QT9 lcd;
 PLAYER player1;
 
+SENDIR SENDIR;
+RECEIVEIR RECEIVEIR(rec);
+decode_results results;
+
 String gameName = "Bomberman";
 bool inGame = false;
 bool inSettings = false;
@@ -29,26 +33,27 @@ ISR(TIMER0_OVF_vect) {
   }
 }
 
+ISR(PCINT2_vect) {
+  RECEIVEIR.checkData(&results);
+  Serial.println(results.value, DEC);
+}
+
 int main(void) {
   //Initialisation
-  // TCCR0A |= (1 << WGM01);
-  // TCCR0A |= (1 << WGM00);
-  // TCCR0B |= (1 << CS02)|(1 << CS01)|(1 << CS00);
-  // TIMSK0 |= (1<<TOIE0);
-  // TCNT0 = 0;
   TCCR0A |= (1 << WGM01)|(1 << WGM00)|(1 << COM0A0);
   TCCR0B |= (1 << WGM02) | (1 << CS02) | (1 << CS00);
   OCR0A = 255;
   TCCR1B = 0;
   TCCR1A |= (1 << WGM10);
   TCCR1B |= (1 << CS11) | (1 << CS10);
-  TCCR2A |= (1 << WGM20) | (1 << WGM10);
-  TCCR2B |= (1 << CS22) | (1 << CS11) | (1 << CS10);
+  PCICR |= (1 << PCIE2);
+  PCMSK2 |= (1 << PCINT20);
   ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
   ADCSRA |= (1 << ADEN);
   UCSR0B = 0;
   sei();
 
+  RECEIVEIR.enableIR0();
   lcd.begin(4);
   nunchuck_init();
   Serial.begin(9600);
